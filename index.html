@@ -1,0 +1,241 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christian Students at Purdue</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main id="app-container">
+        <header id="app-header" class="hidden-header">
+            <h1 id="header-title"></h1>
+        </header>
+        
+        <div id="main-content">
+            <div id="home-page" class="app-page active-page">
+                <div class="home-hero-banner">
+                    <img src="group-photo.jpg" alt="Christian Students at Purdue Group" class="hero-img">
+                </div>
+
+                <button class="dash-banner" id="btn-summer-supply">
+                    <img src="button-summer.png" alt="Summer Supply Background" class="dash-bg-img">
+                    <div class="banner-side-label blue-label">
+                        <span class="vertical-text">Summer Supply</span>
+                    </div>
+                </button>
+
+                <button class="dash-banner" id="btn-daily-challenges">
+                    <img src="button-challenge.png" alt="Daily Challenges Background" class="dash-bg-img">
+                    <div class="banner-side-label gold-label">
+                        <span class="vertical-text">Life Practice Challenges</span>
+                    </div>
+                </button>
+
+                <button class="dash-banner" id="btn-eating-word">
+                    <img src="button-eatgodsword.png" alt="Eating God's Word Background" class="dash-bg-img">
+                    <div class="banner-side-label green-label">
+                        <span class="vertical-text">Eating God's Word</span>
+                    </div>
+                </button>
+            </div> 
+            
+            <div id="about-page" class="app-page">
+                <div class="about-hero-banner">
+                    <img src="about-photo.png" alt="About Us Banner" class="about-hero-img">
+                </div>
+
+                <div class="welcome-card">
+                    <p>Christian Students at Purdue has been helping students grow in Christ for over 30 years. We are a student group composed of believers in Christ from various backgrounds. We stand absolutely for the faith that is common to all Christians.</p>
+                    <p style="margin-top: 12px;">We love the Lord Jesus Christ, and endeavor to give Him "the first place in all things" (Col. 1:18). We have the utmost respect for His Word, and meet simply as Christians without any denominational affiliation because we treasure the testimony of the oneness of the Body of Christ.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="mission-heading">Our Mission</h3>
+                    <p>Our goal is to provide Purdue University students with a genuine community of believers with whom they can pursue Christ (Phil. 3:8, 2 Tim. 2:22), to solidify them in the truth of God's word, and to equip them for their futures in God's Purpose.</p>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Join us in the Journey</h3>
+                    <p>Christian Students at Purdue warmly invites students from every background and level of spiritual growth to join our family. If you are looking for a place to grow in Christ, we welcome you to join us on our journey to make an impact for God's kingdom.</p>
+                    <p style="margin-top: 12px;">
+                        You can send us a message <a href="#" class="app-link" id="google-form-placeholder">here</a> if you are interested in getting in touch. You can also follow CSatPurdue on <a href="#" class="app-link" id="instagram-placeholder">Instagram</a>.
+                    </p>
+                </div>
+
+                <button id="btn-common-faith" class="about-action-btn">
+                    <span>Our Faith</span>
+                    <span class="arrow-icon">➔</span>
+                </button>
+            </div> 
+            
+            <div id="common-faith-page" class="app-page">
+                <button id="back-to-about-btn" class="universal-back-arrow-btn">←</button>
+                
+                <div class="scripture-header-card">
+                    <h2 class="faith-heading">We hold the faith which is common to all believers</h2>
+                    <p class="scripture-text">"To Titus, genuine child according to the common faith: Grace and peace from God the Father and from Jesus Christ our Savior."</p>
+                    <p class="scripture-reference">-Titus 1:4</p>
+                </div>
+            </div> 
+            
+            <div id="announcements-page" class="app-page">
+                <div class="info-card">
+                    <h3>Announcements</h3>
+                    <p>Stay tuned for upcoming events, dynamic schedules, and campus updates!</p>
+                </div>
+            </div>
+
+            <div id="media-page" class="app-page">
+                <div class="info-card">
+                    <h3>Media</h3>
+                    <p>Access audio recordings, message outlines, and video archives here.</p>
+                </div>
+            </div>
+
+            <div id="gospel-page" class="app-page">
+                <div class="info-card">
+                    <h3>Gospel</h3>
+                    <p>Explore resources, tractor tools, and dynamic outreach event spaces.</p>
+                </div>
+            </div>
+
+            <div id="summer-supply-page" class="app-page">
+                <button id="back-to-home-from-summer" class="universal-back-arrow-btn">←</button>
+                
+                <div class="challenge-stats-card">
+                    <h2 class="challenge-title">One Summer. Eleven of Paul's Epistles.</h2>
+                    <p class="challenge-subtitle">June 1 – August 23, 2026</p>
+                    
+                    <div class="badges-scroll-viewport" id="badges-container-row"></div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-text-row">
+                            <span>Challenge Progress</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="progress-bar-fill"></div>
+                        </div>
+                        <div class="progress-chapters-count">
+                            <span id="progress-count-string">0 of 83 chapters read</span>
+                        </div>
+                    </div>
+
+                    <div class="streak-badge">
+                        <span class="streak-icon">🔥</span>
+                        <span id="streak-display-text">0 Day Streak</span>
+                    </div>
+                </div>
+
+                <div id="reading-days-list" class="days-vertical-list"></div>
+            </div> 
+            
+            <div id="scripture-reader-page" class="app-page">
+                <div class="reader-sticky-header">
+                    <button id="back-to-challenge-btn" class="universal-back-arrow-btn">←</button>
+                    <div class="reader-meta">
+                        <h2 id="reader-heading-assignment">Romans 1</h2>
+                        <p id="reader-heading-date">June 1, 2026</p>
+                    </div>
+                </div>
+
+                <div class="bible-scroll-viewport" id="bible-text-scroll-box">
+                    <div id="bible-text-content-target">
+                        <p class="scripture-loading-placeholder">Loading Scripture text...</p>
+                    </div>
+                    <div id="scroll-completion-trigger"></div>
+                </div>
+            </div> 
+            
+            <div id="eating-gods-word-page" class="app-page">
+                <div class="reader-sticky-header">
+                    <button id="back-to-home-from-eating" class="universal-back-arrow-btn">←</button>
+                    <div class="reader-meta">
+                        <h2 class="section-main-title">Eating God's Word</h2>
+                    </div>
+                </div>
+
+                <div class="page-scroll-viewport">
+                    <div class="scripture-quote-banner">
+                        <p class="banner-quote-text">“Man shall not live on bread alone, but on every word that proceeds out through the mouth of God.”</p>
+                        <span class="banner-quote-reference">Matthew 4:4</span>
+                    </div>
+
+                    <div class="horizontal-deck-container">
+                        <div class="horizontal-scroll-track" id="ministry-card-track"></div>
+                    </div>
+
+                    <h3 class="subsection-label">Choose a verse. Eat it. Mark it off.</h3>
+                    <div class="juicy-verses-checklist" id="juicy-verses-container"></div>
+                </div>
+            </div>
+
+            <div id="image-fullscreen-modal" class="image-modal-overlay" style="display: none;">
+                <button id="close-image-modal" class="modal-close-x">✕</button>
+                <div class="modal-image-wrapper">
+                    <img id="modal-target-image" src="" alt="Full View Graphic">
+                </div>
+            </div>
+
+            <div id="life-challenges-page" class="app-page">
+                <button id="back-to-home-from-life" class="universal-back-arrow-btn">←</button>
+                
+                <div class="challenge-stats-card">
+                    <h2 class="challenge-title">Life Practice Challenges</h2>
+                    <p class="challenge-subtitle">Small steps every day</p>
+                </div>
+
+                <div id="life-practices-scroll-track" class="life-challenges-scroll-track"></div>
+            </div>
+
+        </div> <nav id="bottom-nav">
+            <button class="nav-btn active" data-target="home">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span class="nav-text">Home</span>
+            </button>
+            <button class="nav-btn" data-target="about">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <span class="nav-text">About</span>
+            </button>
+            <button class="nav-btn" data-target="announcements">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M20 12V7H4v5H2v2h20v-2h-2zm-2-3v3H6V9h12zm-7 5h2v4h-2v-4z"/></svg>
+                <span class="nav-text">Announcements</span>
+            </button>
+            <button class="nav-btn" data-target="media">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+                <span class="nav-text">Media</span>
+            </button>
+            <button class="nav-btn" data-target="gospel">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke-width="2" fill="none"/>
+                    <circle cx="12" cy="12" r="6" stroke-width="1.5" fill="none"/>
+                    <circle cx="12" cy="12" r="2"/>
+                    <path d="M19 5l3-3M22 5h-3M22 2v3" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span class="nav-text">Gospel</span>
+            </button>
+        </nav>
+    </main>
+
+    <script>
+        fetch('rawScripture.txt')
+            .then(response => response.text())
+            .then(text => {
+                const hiddenBox = document.createElement('textarea');
+                hiddenBox.id = 'raw-scripture-source-box';
+                hiddenBox.value = text;
+                hiddenBox.style.display = 'none';
+                document.body.appendChild(hiddenBox);
+
+                window.scriptureDataReady = true;
+                document.dispatchEvent(new Event('ScriptureDataLoaded'));
+            })
+            .catch(err => console.error("Error loading scripture text file:", err));
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>

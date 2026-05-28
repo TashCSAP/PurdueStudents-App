@@ -1,0 +1,1115 @@
+:root {
+    --purdue-black: #111111; /* Slightly softened pure black to give it that premium matte look */
+    --purdue-gold: #CFB991;
+    --dark-gold: #B19A6C;
+    --light-bg: #F3F4F6;
+    --white: #FFFFFF;
+    --text-dark: #1F2937;
+    --text-muted: #8E8E93; /* Muted native app aesthetic grayscale text */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #111827;
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#app-container {
+    width: 100%;
+    max-width: 420px;
+    height: 90vh;
+    background-color: var(--light-bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+#app-header {
+    background-color: var(--purdue-black);
+    color: var(--purdue-gold);
+    padding: 18px;
+    text-align: center;
+    border-bottom: 3px solid var(--purdue-gold);
+}
+
+#app-header.hidden-header {
+    display: none;
+}
+
+#header-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+#main-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 80px; /* Forces the content box to strictly end exactly where the nav bar begins! */
+    overflow-y: auto; /* Creates an isolated, perfect scroll zone inside the app */
+    padding: 16px;
+    padding-bottom: 20px; /* Light internal breathing room */
+}
+
+/* --- Page Switch Visibility Rules --- */
+.app-page {
+    display: none; /* Everything starts hidden */
+    height: 100%;
+}
+
+.app-page.active-page {
+    display: block; /* Standard scrolling content page layout when turned on */
+}
+
+/* Home Page Specific Layout Override */
+#home-page.active-page {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* --- Home Dashboard Layout --- */
+#home-page {
+    gap: 12px;
+    height: 100%;
+}
+
+.home-hero-banner {
+    flex: 1.4; /* Slightly taller to give the photo room to shine */
+    border-radius: 16px;
+    overflow: hidden; /* Keeps the image corners rounded */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Centers and crops the photo beautifully without stretching it */
+    object-position: center 30%; /* Tilts the crop slightly up to capture the faces perfectly */
+}
+.dash-banner {
+    flex: 1;
+    background-color: var(--purdue-black);
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden; /* Keeps the image and labels rounded at the corners */
+    padding: 0;
+    transition: transform 0.2s;
+}
+
+.dash-banner:active {
+    transform: scale(0.98);
+}
+
+/* Styles the original artwork so it fills the right portion of the button background */
+.dash-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center; /* Keeps the Bible and glass in frame, pushing the empty space left */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* The vertical banner container overlay */
+.banner-side-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 75px; /* Slightly widened to comfortably fit two lines of text */
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2; 
+    box-shadow: 2px 0 8px rgba(0,0,0,0.15); 
+}
+/* Specific blue sampled from the shirt in your group photo */
+.blue-label {
+    background-color: #4A709C; 
+}
+/* Classic Purdue Gold supporting tone from the photo assets */
+.gold-label {
+    background-color: #CFB991;
+}
+/* This tells the text inside the gold banner to be black for clean legibility */
+.gold-label .vertical-text {
+    color: var(--purdue-black);
+}
+
+/* Organic forest green sampled from the shirt in the group photo */
+.green-label {
+    background-color: #4D6E52;
+}
+
+/* Rotates the text and lets it wrap beautifully onto two lines */
+.vertical-text {
+    transform: rotate(-90deg);
+    display: inline-block;
+    text-align: center;
+    line-height: 1.1; /* Keeps the two lines close and clean */
+    width: 140px; /* Forces a box boundary so it wraps naturally */
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+/* --- About Us Content Styling --- */
+.welcome-card {
+    background: linear-gradient(135deg, var(--purdue-black) 0%, #222 100%);
+    color: var(--white);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    border-top: 4px solid var(--purdue-gold);
+    text-align: center;
+}
+
+.welcome-card p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+/* Grouping all content cards so they share the exact same rounded box design */
+.info-card, .contact-card {
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    text-align: center;
+}
+
+/* FIX: Ensuring h3 headings in BOTH types of cards get uniform sizing and color */
+.info-card h3, .contact-card h3, .mission-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--purdue-black);
+    margin-bottom: 8px;
+}
+
+.info-card p, .contact-card p {
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.app-link {
+    color: var(--dark-gold);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* --- NEW: Image-Accented Premium Bottom Menu Bar --- */
+#bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: var(--purdue-black);
+    border-top: 3.5px solid var(--purdue-gold); /* The gold bar run across the top */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 10px;
+    z-index: 10;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex: 1;
+    height: 100%;
+    gap: 4px;
+    transition: opacity 0.2s;
+}
+
+/* Base Inactive Styling (Matches the dimmed row in your screenshot) */
+.nav-icon-svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: var(--text-muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+    transition: stroke 0.2s, opacity 0.2s;
+}
+
+/* Special adjustments for SVG icons requiring specific fills instead of outlines */
+.nav-btn[data-target="home"] .nav-icon-svg,
+.nav-btn[data-target="about"] .nav-icon-svg,
+.nav-btn[data-target="media"] .nav-icon-svg {
+    fill: var(--text-muted);
+    stroke: none;
+}
+
+.nav-text {
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    opacity: 0.6;
+    transition: color 0.2s, opacity 0.2s;
+}
+
+/* Active Styling (Matches the bright row in your screenshot) */
+.nav-btn.active .nav-icon-svg {
+    opacity: 1;
+    stroke: var(--white);
+}
+
+.nav-btn.active[data-target="home"] .nav-icon-svg,
+.nav-btn.active[data-target="about"] .nav-icon-svg,
+.nav-btn.active[data-target="media"] .nav-icon-svg {
+    fill: var(--white);
+    stroke: none;
+}
+
+.nav-btn.active .nav-text {
+    color: var(--white);
+    opacity: 1;
+    font-weight: 600;
+}
+/* --- About Page New Extensions --- */
+.about-hero-banner {
+    height: 160px; /* Keeps the clean banner proportions at the top */
+    border-radius: 16px;
+    overflow: hidden; /* Crucial: forces the image corners to stay perfectly rounded */
+    margin-bottom: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles the actual banner photo to fill the space beautifully */
+.about-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Crops and centers the photo seamlessly on any screen size */
+    object-position: center;
+}
+
+/* Styled Clickable Button at the bottom of the About page content */
+.about-action-btn {
+    width: 100%;
+    background-color: var(--purdue-black);
+    color: var(--purdue-gold);
+    border: 1px solid var(--purdue-gold);
+    padding: 16px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center; /* FIX: Centers the content horizontally */
+    align-items: center;
+    gap: 10px; /* Adds a clean space between "Our Faith" and the arrow */
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.about-action-btn:active {
+    transform: scale(0.99);
+}
+
+/* --- Common Faith Destination View Styles --- */
+.back-link-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    cursor: pointer;
+    text-align: left;
+    padding: 4px 0;
+}
+
+.scripture-header-card {
+    background-color: var(--white);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    text-align: center; /* FIX: Centers the header, scripture text, and verse reference altogether */
+}
+
+/* Crisp bold formatting requested for header */
+.faith-heading {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--purdue-black);
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.scripture-text {
+    font-size: 1rem;
+    color: #374151;
+    font-style: italic; /* Classy look for quotation blocks */
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.scripture-reference {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+```css
+/* --- Summer Supply Challenge Layouts --- */
+.challenge-stats-card {
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.challenge-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--purdue-black);
+}
+
+.challenge-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+/* Progress Bar Implementation */
+.progress-container {
+    margin-bottom: 14px;
+    text-align: left;
+}
+
+.progress-text-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 10px;
+    background-color: #E5E7EB;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+#progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background-color: #4A709C; /* Uses our Summer Supply blue theme */
+    border-radius: 99px;
+    transition: width 0.4s ease;
+}
+
+.progress-chapters-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Streak Counter Display Badge */
+.streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #FEF3C7;
+    color: #D97706;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* Day Entry Layout Rows - Configured for Smart Focus Scroll */
+.days-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 60vh;        /* Sets a clean scrolling height window for the 84 days */
+    overflow-y: auto;        /* Activates a crisp, independent internal scrollway */
+    scroll-behavior: smooth; /* Forces a beautifully smooth slide transition when centering */
+    padding-right: 4px;      /* Adds breathing room for the native scrolling track */
+}
+
+.day-row-item {
+    background-color: var(--white);
+    padding: 14px 16px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+    transition: background-color 0.15s;
+}
+
+.day-row-item:active {
+    background-color: #F3F4F6;
+}
+
+.day-left-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.day-title-string {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.day-assignment-string {
+    font-size: 0.8rem;
+    color: #4A709C;
+    font-weight: 600;
+}
+
+/* Day Complete Check Circle indicators */
+.completion-check-circle {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #D1D5DB;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.day-row-item.is-completed .completion-check-circle {
+    background-color: #10B981;
+    border-color: #10B981;
+}
+
+.completion-check-circle::after {
+    content: "✓";
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: none;
+}
+
+.day-row-item.is-completed .completion-check-circle::after {
+    display: block;
+}
+
+/* --- Isolated Scripture Reader Styling --- */
+.reader-sticky-header {
+    background-color: var(--white);
+    border-bottom: 1px solid #E5E7EB;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+}
+
+.reader-meta {
+    margin-top: 4px;
+}
+
+#reader-heading-assignment {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--purdue-black);
+}
+
+#reader-heading-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.bible-scroll-viewport {
+    height: calc(100% - 80px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+#bible-text-content-target p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #374151;
+    margin-bottom: 16px;
+}
+
+#scroll-completion-trigger {
+    height: 2px;
+    width: 100%;
+    background: transparent;
+    margin-top: 20px;
+}
+/* --- New Book Intro Styling --- */
+.book-intro-header-card {
+    background: linear-gradient(135deg, #fdfbf7 0%, #f5eedc 100%);
+    border: 1px solid #e1d4b7;
+    border-left: 5px solid var(--purdue-gold);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.full-epistle-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--purdue-black);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+}
+
+.subject-divider-line {
+    height: 1px;
+    background-color: #e1d4b7;
+    margin: 12px 0;
+}
+
+.book-subject-label {
+    font-size: 0.8rem;
+    color: #85724d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px !important;
+}
+
+.book-subject-body {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #4b3f2f;
+    font-weight: 500;
+}
+
+/* Crisp clean styling rules for the verse numbers */
+.clean-verse-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #4A709C; /* Summer Supply blue theme accents */
+    background-color: #f0f4f8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+    display: inline-block;
+}
+/* --- Eating God's Word Premium Layout Styles --- */
+.page-scroll-viewport {
+    height: calc(100% - 80px);
+    overflow-y: auto;
+    padding: 12px;
+    padding-bottom: 60px;
+}
+
+/* --- MODERNIZED ACTION LABELS (The "Choose a verse" section) --- */
+.subsection-label {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--purdue-black);
+    text-transform: none; /* Removes any rigid ALL-CAPS look */
+    letter-spacing: -0.2px; /* Tightens it up for a premium, editorial feel */
+    text-align: center; /* Centers it perfectly in the middle */
+    margin: 28px auto 16px auto;
+    width: 100%;
+}
+
+/* 1. Scripture Quote Header Banner Box */
+.scripture-quote-banner {
+    background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+    border-left: 5px solid var(--purdue-gold);
+    padding: 24px 20px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+}
+
+.banner-quote-text {
+    font-family: "Georgia", serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #F3F4F6 !important;
+    margin-bottom: 10px !important;
+}
+
+.banner-quote-reference {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--purdue-gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 2. Horizontal Preview Deck Swipe Runway */
+.horizontal-deck-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 4px 4px 12px 4px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-deck-container::-webkit-scrollbar {
+    height: 5px;
+}
+.horizontal-deck-container::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 10px;
+}
+.horizontal-deck-container::-webkit-scrollbar-thumb {
+    background: var(--purdue-gold);
+    border-radius: 10px;
+}
+
+.horizontal-scroll-track {
+    display: flex;
+    gap: 14px;
+    width: max-content;
+}
+
+/* Baseline Small Preview Thumbnail Squares */
+.ministry-preview-card {
+    width: 110px;
+    height: 110px;
+    background-color: var(--white);
+    border-radius: 16px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06);
+    cursor: pointer;
+    scroll-snap-align: start;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.deck-display-graphic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Crops thumbnails perfectly inside the squares */
+    border-radius: 12px;
+}
+
+/* 3. Full Screen Graphics Lightbox Overlay */
+.image-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(17, 17, 17, 0.95); /* Deep dark matte backdrop mask */
+    z-index: 9999; /* Pulls it safely over top navigation and bottom tabs */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-image-wrapper {
+    width: 100%;
+    max-width: 420px; /* Constraints phone app framework boundary width */
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modal-target-image {
+    width: 100%;
+    height: auto;
+    max-height: 85vh;
+    object-fit: contain; /* Displays full image beautifully without warping text */
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.modal-close-x {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--white);
+    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    z-index: 10000;
+}
+
+/* 4. Juicy Verses Long-Box Scrollable Container & Checklist */
+.juicy-verses-checklist {
+    background-color: var(--white);
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.verse-check-row {
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    border-bottom: 1px solid #F3F4F6;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.verse-check-row:last-child {
+    border-bottom: none;
+}
+
+.verse-check-row:active {
+    background-color: #F9FAFB;
+}
+
+.verse-check-box {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #D1D5DB;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.verse-check-row.is-marked .verse-check-box {
+    background-color: #4A709C;
+    border-color: #4A709C;
+}
+
+.verse-check-box::after {
+    content: "✓";
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 900;
+    display: none;
+}
+
+.verse-check-row.is-marked .verse-check-box::after {
+    display: block;
+}
+
+.verse-content-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.verse-body-string {
+    font-size: 0.98rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+    transition: all 0.2s;
+}
+
+.verse-ref-string {
+    font-size: 0.8rem;
+    color: #4A709C;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.verse-check-row.is-marked .verse-body-string {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+/* --- Reading Challenge Book Completion Badges Runway --- */
+.badges-scroll-viewport {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+    padding: 6px 4px;
+    margin-bottom: 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar entirely for a clean design touch */
+.badges-scroll-viewport::-webkit-scrollbar {
+    display: none;
+}
+
+/* Beautiful micro-badge display nodes */
+.earned-badge-node {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    animation: badgePopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.earned-badge-node img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Playful bounce animation when a new badge unlocks */
+@keyframes badgePopIn {
+    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+/* =================================================== */
+/* GLOBAL MODERN HEADERS TYPOGRAPHY FIX         */
+/* =================================================== */
+
+/* This targets the main h2 titles inside EVERY page container */
+.app-page h2, 
+.challenge-stats-card h2,
+.app-page h3.page-main-title,
+.section-main-title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #111111; /* Clean, deep obsidian instead of harsh default black */
+    text-align: center; /* Centers every main page header completely */
+    letter-spacing: -0.6px; /* Tightens characters for a premium app look */
+    margin-top: 4px;
+    margin-bottom: 6px;
+    text-transform: none; /* Prevents ugly clunky all-caps */
+}
+
+/* This targets subtitles directly below those main headers (like your date ranges) */
+.challenge-subtitle,
+.page-subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.95rem;
+    color: #666666; /* Clean muted grey */
+    text-align: center; /* Centers the subtitles perfectly below the titles */
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+/* =================================================== */
+/* UNIVERSAL MODERN BACK ARROW STYLE ELEMENT           */
+/* =================================================== */
+.universal-back-arrow-btn {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    background: none;
+    border: none;
+    font-size: 1.6rem; /* Big enough to tap easily, clean and bold */
+    font-weight: 600;
+    color: #444444; /* Clean muted dark grey */
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    z-index: 10; /* Ensures it sits on top of layout elements */
+    transition: transform 0.2s ease, color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* =================================================== */
+/* UNIVERSAL BACK ARROW LAYER STACK FIX                */
+/* =================================================== */
+.universal-back-arrow-btn {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    background: none;
+    border: none;
+    font-size: 1.6rem; 
+    font-weight: 600;
+    color: #444444; 
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    
+    /* 🟢 CRITICAL FIX: Push the button to layer 999 so it floats over EVERYTHING */
+    z-index: 999; 
+    
+    transition: transform 0.2s ease, color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Subtle micro-interaction when tapped or hovered */
+.universal-back-arrow-btn:active {
+    transform: scale(0.9) translateX(-2px);
+    color: #111111;
+}
+
+/* Ensure the page headers and titles are also pushed safely to the foreground */
+.challenge-stats-card,
+.reader-sticky-header,
+.section-main-title,
+.challenge-title {
+    position: relative;
+    z-index: 990; /* Sits right beneath the back button, but safely above the scrolling content */
+}
+
+/* Ensure the page containers are ready for absolute positioned back arrows */
+.app-page, 
+#summer-supply-page,
+#scripture-reader-page,
+#life-challenges-page {
+    position: relative; 
+    padding-top: 48px;  
+}
+/* =================================================== */
+/* LIFE PRACTICE CHALLENGES MODULE INTERFACE            */
+/* =================================================== */
+
+.life-challenges-scroll-track {
+    padding: 16px;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Master Card Layout Container */
+.practice-challenge-card {
+    background: #ffffff;
+    border: 1px solid #eef0f3;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Row for Title and Single-Checkboxes */
+.challenge-card-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+}
+
+.challenge-card-main-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111111;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Interactive Checkboxes Layout Mechanics */
+.practice-check-box-node {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.practice-check-box-node::after {
+    content: "✓";
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 900;
+    display: none;
+}
+.practice-check-box-node.is-checked {
+    background-color: var(--purdue-gold, #cfb991); /* Uses app gold default accent color */
+    border-color: var(--purdue-gold, #cfb991);
+}
+.practice-check-box-node.is-checked::after {
+    display: block;
+}
+
+/* Sub-steps Sub-grid Track Container */
+.challenge-substeps-grid-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px dashed #e2e8f0;
+}
+
+.substep-pill-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    padding: 8px 4px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+.substep-pill-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* Permanent Custom User Thought Notes Textarea Box */
+.challenge-user-notes-textbox {
+    width: 100%;
+    min-height: 70px;
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #334155;
+    background: #fafafa;
+    resize: vertical;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+.challenge-user-notes-textbox:focus {
+    border-color: #cfb991;
+    background: #ffffff;
+}
+.challenge-user-notes-textbox::placeholder {
+    color: #94a3b8;
+    font-style: italic;
+}
