@@ -13,6 +13,9 @@ function bootUpApplicationEngine() {
     const btnDailyChallenges = document.getElementById('btn-daily-challenges');
     const lifeChallengesPage = document.getElementById('life-challenges-page');
     const btnBackToHomeFromLife = document.getElementById('back-to-home-from-life');
+    const btnEatingGodsWord = document.getElementById('btn-eating-word'); 
+    const eatingGodsWordPage = document.getElementById('eating-gods-word-page');
+    const btnBackToHomeFromEating = document.getElementById('back-to-home-from-eating');
 
     // Challenge & Reader Specific Elements
     const summerSupplyPage = document.getElementById('summer-supply-page');
@@ -132,7 +135,7 @@ function bootUpApplicationEngine() {
         calculateStats();
     }
 
-    // STATS & STREAK CALCULATIONS (UPDATED WITH BADGE LOGIC)
+    // STATS & STREAK CALCULATIONS
     function calculateStats() {
         const completedMap = JSON.parse(localStorage.getItem('csatpurdue_reading_map')) || {};
         let completedCount = 0;
@@ -154,7 +157,6 @@ function bootUpApplicationEngine() {
             streakDisplayText.innerText = `${currentStreak} Day Streak`;
         }
 
-        // RUN THE BADGE DETECTOR SYSTEM IMMEDIATELY HERE:
         checkAndRenderEarnedBadges(completedMap);
     }
 
@@ -211,7 +213,6 @@ function bootUpApplicationEngine() {
             } else {
                 let htmlOutput = ``;
 
-                // Render Header Card on Chapter 1 of a book
                 if (dayItem.chapter === 1) {
                     const currentTitle = dynamicBookTitles[dayItem.book] || `${dayItem.book}`;
                     const currentSubject = dynamicBookSubjects[dayItem.book] || "Subject description text is parsing...";
@@ -257,7 +258,7 @@ function bootUpApplicationEngine() {
         }, 150);
     }
 
-    // --- UPDATED COMPLETION DETECTION ENGINE ---
+    // COMPLETION DETECTION ENGINE
     function setupScrollAutoCheck(dayId, canMarkComplete) {
         if (autoScrollObserver) autoScrollObserver.disconnect();
         if (!canMarkComplete) return;
@@ -296,7 +297,7 @@ function bootUpApplicationEngine() {
         }
     }
 
-    // 🟢 INSIDE APPLICATION ENGINE: DIRECT LIFE PRACTICE CHALLENGES LOGIC MODULE
+    // LIFE PRACTICE CHALLENGES LOGIC MODULE
     function loadAndBuildLifePracticeChallenges() {
         const listContainer = document.getElementById('life-practices-scroll-track');
         if (!listContainer) return;
@@ -444,7 +445,6 @@ function bootUpApplicationEngine() {
         });
     }
 
-    // Menu click listener now triggers the freshly nested function cleanly!
     if (btnDailyChallenges) {
         btnDailyChallenges.addEventListener('click', () => {
             loadAndBuildLifePracticeChallenges();
@@ -452,6 +452,28 @@ function bootUpApplicationEngine() {
             updateHeader('life_practices');
         });
     } 
+
+    // 🟢 SYNCHRONIZED CLICK HANDLER FOR EATING GOD'S WORD
+    if (btnEatingGodsWord) {
+        btnEatingGodsWord.addEventListener('click', () => {
+            showPage(eatingGodsWordPage);
+            
+            const appHeader = document.getElementById('app-header');
+            if (appHeader) appHeader.classList.add('hidden-header');
+            
+            initializeMinistryDeck();
+            loadAndBuildJuicyVerses();
+        });
+    }
+
+    if (btnBackToHomeFromEating) {
+        btnBackToHomeFromEating.addEventListener('click', () => {
+            showPage(document.getElementById('home-page'));
+            
+            const appHeader = document.getElementById('app-header');
+            if (appHeader) appHeader.classList.remove('hidden-header'); 
+        });
+    }
     
     if (btnBackToHomeFromSummer) {
         btnBackToHomeFromSummer.addEventListener('click', () => {
@@ -579,6 +601,111 @@ function parseRawScriptureText() {
             }
         }
     }
+}
+
+// --- EATING GOD'S WORD INTERACTIVE CONTROLS ENGINE ---
+
+function initializeMinistryDeck() {
+    const cardTrackContainer = document.getElementById('ministry-card-track');
+    const imageModal = document.getElementById('image-fullscreen-modal');
+    const modalImg = document.getElementById('modal-target-image');
+    const modalClose = document.getElementById('close-image-modal');
+    
+    if (!cardTrackContainer) return;
+    cardTrackContainer.innerHTML = '';
+    
+    const graphicDeckData = [
+        { id: "fruit", thumb: "thumb-fruit.png", full: "full-fruit.png" },
+        { id: "eat",   thumb: "thumb-eat.png",   full: "full-eat.png" },
+        { id: "speak", thumb: "thumb-speak.png", full: "full-speak.png" }
+    ];
+
+    graphicDeckData.forEach(card => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'ministry-preview-card';
+        cardEl.innerHTML = `<img src="${card.thumb}" class="deck-display-graphic" alt="Ministry Thumbnail">`;
+
+        cardEl.addEventListener('click', () => {
+            if (imageModal && modalImg) {
+                modalImg.src = card.full;       
+                imageModal.style.display = 'flex'; 
+            }
+        });
+
+        cardTrackContainer.appendChild(cardEl);
+    });
+
+    if (modalClose && imageModal) {
+        modalClose.addEventListener('click', () => {
+            imageModal.style.display = 'none'; 
+        });
+        
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) {
+                imageModal.style.display = 'none';
+            }
+        });
+    }
+}
+
+function loadAndBuildJuicyVerses() {
+    // 🟢 1. Grab the container right now inside the function so it's fresh and ready
+    const juicyVersesContainer = document.getElementById('juicy-verses-container');
+
+    // 2. Now this safe check works flawlessly instead of killing the button!
+    if (!juicyVersesContainer) return;
+    juicyVersesContainer.innerHTML = '<p class="scripture-loading-placeholder">Loading verses track...</p>';
+
+    fetch('juicyVerses.txt')
+        .then(res => res.text())
+        .then(data => {
+            juicyVersesContainer.innerHTML = '';
+            const lines = data.split('\n');
+            const checkedMap = JSON.parse(localStorage.getItem('csatpurdue_juicy_verses_map')) || {};
+
+            lines.forEach((line, index) => {
+                const trimmedLine = line.trim();
+                if (!trimmedLine || !trimmedLine.includes('|')) return;
+
+                const parts = trimmedLine.split('|');
+                const verseText = parts[0].trim();
+                const verseRef = parts[1].trim();
+                const uniqueId = `jv_row_${index}`;
+                const isMarked = !!checkedMap[uniqueId];
+
+                const row = document.createElement('div');
+                row.className = `verse-check-row ${isMarked ? 'is-marked' : ''}`;
+                row.innerHTML = `
+                    <div class="verse-check-box"></div>
+                    <div class="verse-content-block">
+                        <p class="verse-body-string">${verseText}</p>
+                        <span class="verse-ref-string">${verseRef}</span>
+                    </div>
+                `;
+
+                row.addEventListener('click', () => {
+                    const currentMap = JSON.parse(localStorage.getItem('csatpurdue_juicy_verses_map')) || {};
+                    if (row.classList.contains('is-marked')) {
+                        row.classList.remove('is-marked');
+                        delete currentMap[uniqueId];
+                    } else {
+                        row.classList.add('is-marked');
+                        currentMap[uniqueId] = true;
+                    }
+                    localStorage.setItem('csatpurdue_juicy_verses_map', JSON.stringify(currentMap));
+                });
+
+                juicyVersesContainer.appendChild(row);
+            });
+        })
+        .catch(err => {
+            console.error("Error loading juicyVerses.txt:", err);
+            // 🟢 3. Made sure the catch block can see the new container variable too
+            const fallbackContainer = document.getElementById('juicy-verses-container');
+            if (fallbackContainer) {
+                fallbackContainer.innerHTML = '<p>Error loading verses file.</p>';
+            }
+        });
 }
 
 // Master execution gatekeeper loops
