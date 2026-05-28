@@ -407,7 +407,7 @@ body {
     color: var(--text-muted);
     font-weight: 600;
 }
-```css
+
 /* --- Summer Supply Challenge Layouts --- */
 .challenge-stats-card {
     background-color: var(--white);
@@ -1140,18 +1140,4 @@ body {
     color: #94a3b8;
     font-style: italic;
 }
-/* 1. Tell the home page background and wrapper to let clicks pass through */
-#home-page, 
-.dash-bg-img, 
-.banner-side-label {
-    pointer-events: none; 
-}
 
-/* 2. Force the actual button wrapper and everything inside it to strictly capture clicks */
-#btn-eating-word,
-#btn-eating-word *,
-.dash-banner,
-.dash-banner * {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
