@@ -1140,12 +1140,18 @@ body {
     color: #94a3b8;
     font-style: italic;
 }
+/* 1. Tell the home page background and wrapper to let clicks pass through */
+#home-page, 
+.dash-bg-img, 
+.banner-side-label {
+    pointer-events: none; 
+}
 
-/* =================================================== */
-/* 🟢 LAYER BLOCKER BREAKTHROUGH                      */
-/* =================================================== */
-.dash-banner, #btn-eating-word {
-    position: relative !important;
-    z-index: 9999 !important; /* Forces the button to sit on top of all transparent layers */
-    pointer-events: auto !important; /* Guarantees the browser forwards taps directly to the button */
+/* 2. Force the actual button wrapper and everything inside it to strictly capture clicks */
+#btn-eating-word,
+#btn-eating-word *,
+.dash-banner,
+.dash-banner * {
+    pointer-events: auto !important;
+    cursor: pointer !important;
 }
