@@ -299,101 +299,151 @@ function bootUpApplicationEngine() {
 
     // LIFE PRACTICE CHALLENGES LOGIC MODULE
     function loadAndBuildLifePracticeChallenges() {
-        const listContainer = document.getElementById('life-practices-scroll-track');
-        if (!listContainer) return;
+    const listContainer = document.getElementById('life-practices-scroll-track');
+    if (!listContainer) return;
 
-        listContainer.innerHTML = '';
+    listContainer.innerHTML = '';
 
-        const localChallengesData = [
-            { title: "Spend 10 minutes with the Lord 5 mornings this week BEFORE you turn on your phone or check notifications.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"] },
-            { title: "Tell the Lord you love Him 100 times today.", steps: [] },
-            { title: "Pray this prayer every morning for one week. “Lord Jesus, I love You. Conquer me today. Make me Your captive. Never let me win. Defeat me all the time.”", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
-            { title: "Give someone a Bible.", steps: [] },
-            { title: "Find a private place (your car, alone, at the far end of a parking lot, works well) and call on the Lord OUT LOUD 100 times.", steps: [] },
-            { title: "Speak the gospel to someone. Bring a companion along if you want.", steps: [] },
-            { title: "Get a blank piece of paper or notebook and write down a conversation to the Lord. Tell Him your whole heart. Complain. Be real. Don’t stop until you are writing “Lord Jesus, I love You!” and mean it. Throw the paper away when you are done.", steps: [] },
-            { title: "Read a chapter of the New Testament before bed every day this week. Let it be the very last thing you look at before you close your eyes.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
-            { title: "Turn off notifications for all your social media accounts (instagram, youtube, snapchat, tiktok, etc.) and leave them off for at least one week.", steps: [] },
-            { title: "Take a social media break for an entire day. If you make it through, try again the next day. See if you can get to 10 days.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7", "Day 8", "Day 9", "Day 10"] },
-            { title: "Pray this prayer every morning for a week. “Lord, strengthen me with power through Your spirit into my inner man today. Make Your home more in my heart today. Give me today’s normal amount of growth in life.”", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
-            { title: "End every day this week with a time of confession with the Lord. He is faithful and righteous to forgive us our sins and cleanse us from all unrighteousness. We just need to ask.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
-            { title: "Spend 5 minutes in the middle of your day to pray.", steps: [] }
-        ];
+    const localChallengesData = [
+        { title: "Spend 10 minutes with the Lord 5 mornings this week BEFORE you turn on your phone or check notifications.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"] },
+        { title: "Tell the Lord you love Him 100 times today.", steps: [] },
+        { title: "Pray this prayer every morning for one week. “Lord Jesus, I love You. Conquer me today. Make me Your captive. Never let me win. Defeat me all the time.”", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
+        { title: "Give someone a Bible.", steps: [] },
+        { title: "Find a private place (your car, alone, at the far end of a parking lot, works well) and call on the Lord OUT LOUD 100 times.", steps: [] },
+        { title: "Speak the gospel to someone. Bring a companion along if you want.", steps: [] },
+        { title: "Get a blank piece of paper or notebook and write down a conversation to the Lord. Tell Him your whole heart. Complain. Be real. Don’t stop until you are writing “Lord Jesus, I love You!” and mean it. Throw the paper away when you are done.", steps: [] },
+        { title: "Read a chapter of the New Testament before bed every day this week. Let it be the very last thing you look at before you close your eyes.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
+        { title: "Turn off notifications for all your social media accounts (instagram, youtube, snapchat, tiktok, etc.) and leave them off for at least one week.", steps: [] },
+        { title: "Take a social media break for an entire day. If you make it through, try again the next day. See if you can get to 10 days.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7", "Day 8", "Day 9", "Day 10"] },
+        { title: "Pray this prayer every morning for a week. “Lord, strengthen me with power through Your spirit into my inner man today. Make Your home more in my heart today. Give me today’s normal amount of growth in life.”", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
+        { title: "End every day this week with a time of confession with the Lord. He is faithful and righteous to forgive us our sins and cleanse us from all unrighteousness. We just need to ask.", steps: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] },
+        { title: "Spend 5 minutes in the middle of your day to pray.", steps: [] }
+    ];
 
-        const completedMap = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_map')) || {};
-        const savedNotesMap = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_notes')) || {};
+    const completedMap = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_map')) || {};
+    const savedNotesMap = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_notes')) || {};
 
-        localChallengesData.forEach((challenge, index) => {
-            const cardId = `challenge_card_${index}`;
-            const cardEl = document.createElement('div');
-            cardEl.className = 'practice-challenge-card';
+    let totalCompletedChallengesCount = 0;
 
-            if (challenge.steps.length > 0) {
-                let subStepsHTML = '';
-                challenge.steps.forEach((stepName, stepIdx) => {
-                    const stepId = `${cardId}_step_${stepIdx}`;
-                    const isChecked = !!completedMap[stepId];
-                    subStepsHTML += `
-                        <div class="substep-pill-item">
-                            <span class="substep-pill-label">${stepName}</span>
-                            <div class="practice-check-box-node ${isChecked ? 'is-checked' : ''}" data-step-id="${stepId}"></div>
-                        </div>
-                    `;
-                });
+    localChallengesData.forEach((challenge, index) => {
+        const cardId = `challenge_card_${index}`;
+        const cardEl = document.createElement('div');
+        cardEl.className = 'practice-challenge-card';
 
-                cardEl.innerHTML = `
-                    <div class="challenge-card-header-row">
-                        <h3 class="challenge-card-main-title">${challenge.title}</h3>
-                    </div>
-                    <div class="challenge-substeps-grid-track">
-                        ${subStepsHTML}
+        let isThisChallengeFullyComplete = false;
+
+        if (challenge.steps.length > 0) {
+            let subStepsHTML = '';
+            let allStepsMarked = true;
+
+            challenge.steps.forEach((stepName, stepIdx) => {
+                const stepId = `${cardId}_step_${stepIdx}`;
+                const isChecked = !!completedMap[stepId];
+                if (!isChecked) allStepsMarked = false; // Found an uncompleted sub-step
+
+                subStepsHTML += `
+                    <div class="substep-pill-item">
+                        <span class="substep-pill-label">${stepName}</span>
+                        <div class="practice-check-box-node ${isChecked ? 'is-checked' : ''}" data-step-id="${stepId}"></div>
                     </div>
                 `;
-            } else {
-                const isChecked = !!completedMap[cardId];
-                cardEl.innerHTML = `
-                    <div class="challenge-card-header-row">
-                        <h3 class="challenge-card-main-title">${challenge.title}</h3>
-                        <div class="practice-check-box-node ${isChecked ? 'is-checked' : ''}" data-step-id="${cardId}"></div>
-                    </div>
-                `;
+            });
+
+            if (allStepsMarked) {
+                isThisChallengeFullyComplete = true;
             }
 
-            const savedNoteValue = savedNotesMap[cardId] || "";
-            const textareaEl = document.createElement('textarea');
-            textareaEl.className = 'challenge-user-notes-textbox';
-            textareaEl.placeholder = 'Jot down your thoughts or note progress here...';
-            textareaEl.value = savedNoteValue;
+            cardEl.innerHTML = `
+                <div class="challenge-card-header-row">
+                    <h3 class="challenge-card-main-title">${challenge.title}</h3>
+                </div>
+                <div class="challenge-substeps-grid-track">
+                    ${subStepsHTML}
+                </div>
+            `;
+        } else {
+            const isChecked = !!completedMap[cardId];
+            if (isChecked) {
+                isThisChallengeFullyComplete = true;
+            }
 
-            textareaEl.addEventListener('input', (e) => {
-                const trackingNotes = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_notes')) || {};
-                trackingNotes[cardId] = e.target.value;
-                localStorage.setItem('csatpurdue_life_challenges_notes', JSON.stringify(trackingNotes));
-            });
+            cardEl.innerHTML = `
+                <div class="challenge-card-header-row">
+                    <h3 class="challenge-card-main-title">${challenge.title}</h3>
+                    <div class="practice-check-box-node ${isChecked ? 'is-checked' : ''}" data-step-id="${cardId}"></div>
+                </div>
+            `;
+        }
 
-            cardEl.appendChild(textareaEl);
+        if (isThisChallengeFullyComplete) {
+            totalCompletedChallengesCount++;
+        }
 
-            const checkBoxes = cardEl.querySelectorAll('.practice-check-box-node');
-            checkBoxes.forEach(box => {
-                box.addEventListener('click', () => {
-                    const targetId = box.getAttribute('data-step-id');
-                    const currentTrackingMap = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_map')) || {};
+        const savedNoteValue = savedNotesMap[cardId] || "";
+        const textareaEl = document.createElement('textarea');
+        textareaEl.className = 'challenge-user-notes-textbox';
+        textareaEl.placeholder = 'Jot down your thoughts or note progress here...';
+        textareaEl.value = savedNoteValue;
 
-                    if (box.classList.contains('is-checked')) {
-                        box.classList.remove('is-checked');
-                        delete currentTrackingMap[targetId];
-                    } else {
-                        box.classList.add('is-checked');
-                        currentTrackingMap[targetId] = true;
-                    }
-
-                    localStorage.setItem('csatpurdue_life_challenges_map', JSON.stringify(currentTrackingMap));
-                });
-            });
-
-            listContainer.appendChild(cardEl);
+        textareaEl.addEventListener('input', (e) => {
+            const trackingNotes = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_notes')) || {};
+            trackingNotes[cardId] = e.target.value;
+            localStorage.setItem('csatpurdue_life_challenges_notes', JSON.stringify(trackingNotes));
         });
+
+        cardEl.appendChild(textareaEl);
+
+        const checkBoxes = cardEl.querySelectorAll('.practice-check-box-node');
+        checkBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const targetId = box.getAttribute('data-step-id');
+                const currentTrackingMap = JSON.parse(localStorage.getItem('csatpurdue_life_challenges_map')) || {};
+
+                if (box.classList.contains('is-checked')) {
+                    box.classList.remove('is-checked');
+                    delete currentTrackingMap[targetId];
+                } else {
+                    box.classList.add('is-checked');
+                    currentTrackingMap[targetId] = true;
+                }
+
+                localStorage.setItem('csatpurdue_life_challenges_map', JSON.stringify(currentTrackingMap));
+                
+                // 🟢 Re-trigger the setup on check/uncheck to refresh badges in real-time
+                loadAndBuildLifePracticeChallenges();
+            });
+        });
+
+        listContainer.appendChild(cardEl);
+    });
+
+    // 🟢 Render the Life Practice Badges based on completed count (1, 3, 6, 9, 12, ...)
+    renderLifePracticeBadges(totalCompletedChallengesCount);
+}
+
+// 🟢 NEW: Independent execution loop for rendering the Life Badges
+function renderLifePracticeBadges(completedCount) {
+    const badgeRowContainer = document.getElementById('life-badges-container-row');
+    if (!badgeRowContainer) return;
+    badgeRowContainer.innerHTML = '';
+
+    // Generate badge thresholds dynamically so it works when you add more than 12 challenges later
+    if (completedCount >= 1) {
+        createLifeBadgeElement(badgeRowContainer, "Badge-Life-1.png", "First Challenge Done!");
     }
+    
+    for (let milestone = 3; milestone <= completedCount; milestone += 3) {
+        createLifeBadgeElement(badgeRowContainer, `Badge-Life-${milestone}.png`, `${milestone} Challenges Done!`);
+    }
+}
+
+// Helper function to bundle the element construction smoothly
+function createLifeBadgeElement(container, filename, tooltipText) {
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'earned-badge-node';
+    badgeEl.innerHTML = `<img src="${filename}" alt="Life Milestone Badge" title="${tooltipText}">`;
+    container.appendChild(badgeEl);
+}
 
     // BASE APP NAVIGATION ROUTER
     navButtons.forEach(button => {
@@ -515,6 +565,24 @@ function bootUpApplicationEngine() {
 
     updateHeader('home');
     verifyStreakValidityOnBoot();
+    const latestAnnouncementId = "announcement_june_2026"; 
+    const announcementBadge = document.getElementById('announcement-badge');
+    const announcementsTabButton = document.querySelector('.nav-btn[data-target="announcements"]');
+
+    const lastSeenAnnouncement = localStorage.getItem('csatpurdue_last_seen_announcement');
+
+    if (lastSeenAnnouncement !== latestAnnouncementId && announcementBadge) {
+        announcementBadge.style.display = 'block'; 
+    }
+
+    if (announcementsTabButton) {
+        announcementsTabButton.addEventListener('click', () => {
+            if (announcementBadge) {
+                announcementBadge.style.display = 'none';
+            }
+            localStorage.setItem('csatpurdue_last_seen_announcement', latestAnnouncementId);
+        }); // 👈 Closes click listener arrow function
+    } // 👈 Closes if (announcementsTabButton) statement
 }
 
 // --- UNIVERSAL TEXT PARSER ENGINE ---

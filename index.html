@@ -84,13 +84,17 @@
                 </div>
             </div> 
             
-            <div id="announcements-page" class="app-page">
-                <div class="info-card">
-                    <h3>Announcements</h3>
-                    <p>Stay tuned for upcoming events and updates!</p>
-                </div>
-            </div>
-
+           <div id="announcements-page" class="app-page">
+    <div class="info-card">
+        <h3>It’s Day Two!</h3>
+        <p style="font-size: 0.8rem; color: #8E8E93; margin-bottom: 10px; font-weight: 600;">JUNE 2, 2026</p>
+        <p style="font-style: italic; margin-bottom: 6px;">
+            "Therefore we DO NOT LOSE HEART; but though our outer man is decaying, yet our inner man is being renewed DAY BY DAY." 
+            — 2 Corinthians 4:16
+        </p>
+        <p>May we all not only begin, but continue day by day with the Lord as our endurance and strength!</p>
+    </div>
+</div>
             <div id="media-page" class="app-page">
                 <div class="info-card">
                     <h3>Media</h3>
@@ -184,17 +188,20 @@
             </div>
 
             <div id="life-challenges-page" class="app-page">
-                <button id="back-to-home-from-life" class="universal-back-arrow-btn">←</button>
-                
-                <div class="challenge-stats-card">
-                    <h2 class="challenge-title">Challenge the Divine Life Within You</h2>
-                    <p class="challenge-subtitle">Pick a challenge and complete it. Jot down your experience. No one else will see what you write, this is for your own pursuit.</p>
-                </div>
+    <button id="back-to-home-from-life" class="universal-back-arrow-btn">←</button>
+    
+    <div class="challenge-stats-card">
+        <h2 class="challenge-title">Challenge the Divine Life Within You</h2>
+        <p class="challenge-subtitle">Pick a challenge and complete it. Jot down your experience. No one else will see what you write, this is for your own pursuit.</p>
+        
+        <div class="badges-scroll-viewport" id="life-badges-container-row"></div>
+    </div>
 
-                <div id="life-practices-scroll-track" class="life-challenges-scroll-track"></div>
-            </div>
+    <div id="life-practices-scroll-track" class="life-challenges-scroll-track"></div>
+</div>
 
-        </div> <nav id="bottom-nav">
+      </div> 
+        <nav id="bottom-nav">
             <button class="nav-btn active" data-target="home">
                 <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                 <span class="nav-text">Home</span>
@@ -203,10 +210,15 @@
                 <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                 <span class="nav-text">About</span>
             </button>
+            
             <button class="nav-btn" data-target="announcements">
-                <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M20 12V7H4v5H2v2h20v-2h-2zm-2-3v3H6V9h12zm-7 5h2v4h-2v-4z"/></svg>
+                <div style="position: relative; display: inline-block;">
+                    <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M20 12V7H4v5H2v2h20v-2h-2zm-2-3v3H6V9h12zm-7 5h2v4h-2v-4z"/></svg>
+                    <span id="announcement-badge" class="nav-dot-badge" style="display: none;"></span>
+                </div>
                 <span class="nav-text">Announcements</span>
             </button>
+            
             <button class="nav-btn" data-target="media">
                 <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
                 <span class="nav-text">Media</span>

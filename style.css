@@ -1141,3 +1141,13 @@ body {
     font-style: italic;
 }
 
+.nav-dot-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background-color: #EF4444; /* Bright Notification Red */
+    border-radius: 50%;
+    border: 1.5px solid var(--purdue-black); /* Blends into your bottom nav bar */
+}
