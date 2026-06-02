@@ -565,11 +565,22 @@ function createLifeBadgeElement(container, filename, tooltipText) {
 
     updateHeader('home');
     verifyStreakValidityOnBoot();
-    const latestAnnouncementId = "announcement_june_2026"; 
+ const latestAnnouncementId = "announcement_day_two_june2"; 
     const announcementBadge = document.getElementById('announcement-badge');
     const announcementsTabButton = document.querySelector('.nav-btn[data-target="announcements"]');
 
     const lastSeenAnnouncement = localStorage.getItem('csatpurdue_last_seen_announcement');
+    
+    // 🟢 NEW: Check what version of the app code this device currently remembers
+    const lastCachedVersion = localStorage.getItem('csatpurdue_app_version_control');
+
+    // 🟢 NEW: ⚡ THE FORCE REFRESH ENGINE FOR LAZY USERS ⚡
+    if (lastCachedVersion && lastCachedVersion !== latestAnnouncementId) {
+        localStorage.setItem('csatpurdue_app_version_control', latestAnnouncementId);
+        window.location.reload(true); // Vaporizes stubborn cache and downloads fresh code!
+    } else {
+        localStorage.setItem('csatpurdue_app_version_control', latestAnnouncementId);
+    }
 
     if (lastSeenAnnouncement !== latestAnnouncementId && announcementBadge) {
         announcementBadge.style.display = 'block'; 
@@ -581,9 +592,9 @@ function createLifeBadgeElement(container, filename, tooltipText) {
                 announcementBadge.style.display = 'none';
             }
             localStorage.setItem('csatpurdue_last_seen_announcement', latestAnnouncementId);
-        }); // 👈 Closes click listener arrow function
-    } // 👈 Closes if (announcementsTabButton) statement
-}
+        }); 
+    } 
+} // 👈 Keeps your absolute final closing bracket perfectly balanced!
 
 // --- UNIVERSAL TEXT PARSER ENGINE ---
 const bibleTextDatabase = {};
