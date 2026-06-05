@@ -150,8 +150,6 @@ function bootUpApplicationEngine() {
         if (progressPercentText) progressPercentText.innerText = `${progressPercent}%`;
         if (progressCountString) progressCountString.innerText = `${completedCount} of 83 chapters read`;
 
-        calculateCalendarStreakOnMark();
-
         let currentStreak = parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0;
         if (streakDisplayText) {
             streakDisplayText.innerText = `${currentStreak} Day Streak`;
@@ -292,6 +290,10 @@ function bootUpApplicationEngine() {
         if (!completedMap[dayId]) {
             completedMap[dayId] = true;
             localStorage.setItem('csatpurdue_reading_map', JSON.stringify(completedMap));
+            
+            // 🟢 NEW: Safely calculate streak ONLY when a chapter is legitimately completed!
+            calculateCalendarStreakOnMark();
+            
             initializeChallengeDashboard();
             console.log(`Day assignment index ${dayId} successfully checked off!`);
         }
@@ -798,36 +800,87 @@ if (window.scriptureDataReady) {
     });
 }
 
+function getTrueLocalDateString() {
+    const localDate = new Date();
+    const year = localDate.getFullYear();
+    const month = String(localDate.getMonth() + 1).padStart(2, '0');
+    const day = String(localDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function getLocalDateStringWithOffset(offsetDays) {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + offsetDays);
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 function calculateCalendarStreakOnMark() {
-    const todayStr = new Date().toISOString().split('T')[0];
-    let currentStreak = parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0;
-    let lastReadDate = localStorage.getItem('csatpurdue_last_read_date') || "";
+    const readingHistoryLog = JSON.parse(localStorage.getItem('csatpurdue_completion_dates_log')) || [];
+    const todayStr = getTrueLocalDateString();
 
-    if (lastReadDate === todayStr) return; 
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-    if (lastReadDate === yesterdayStr) {
-        currentStreak += 1; 
-    } else {
-        currentStreak = 1; 
+    if (!readingHistoryLog.includes(todayStr)) {
+        readingHistoryLog.push(todayStr);
+        localStorage.setItem('csatpurdue_completion_dates_log', JSON.stringify(readingHistoryLog));
     }
 
-    localStorage.setItem('csatpurdue_streak_count', currentStreak);
+    let activeStreakCount = 1; 
+    let checkOffset = -1;      
+
+    while (true) {
+        const consecutivePastDateStr = getLocalDateStringWithOffset(checkOffset);
+        if (readingHistoryLog.includes(consecutivePastDateStr)) {
+            activeStreakCount++;
+            checkOffset--;
+        } else {
+            break;
+        }
+    }
+
+    localStorage.setItem('csatpurdue_streak_count', activeStreakCount);
     localStorage.setItem('csatpurdue_last_read_date', todayStr);
 }
 
 function verifyStreakValidityOnBoot() {
-    const todayStr = new Date().toISOString().split('T')[0];
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const readingHistoryLog = JSON.parse(localStorage.getItem('csatpurdue_completion_dates_log')) || [];
+    const completedMap = JSON.parse(localStorage.getItem('csatpurdue_reading_map')) || {};
+    const todayStr = getTrueLocalDateString();
+    const yesterdayStr = getLocalDateStringWithOffset(-1);
 
-    let lastReadDate = localStorage.getItem('csatpurdue_last_read_date') || "";
+    // 👑 ONE-TIME RESCUE PATCH FOR JUNE 5, 2026
+    // If it's June 5th, their streak log hasn't been built yet, and they read Romans 1, 2, 3, and 4...
+    if (todayStr === "2026-06-05" && readingHistoryLog.length === 0) {
+        // IDs 0, 1, 2, 3 correspond to June 1, 2, 3, 4 (Romans 1-4)
+        if (completedMap[0] && completedMap[1] && completedMap[2] && completedMap[3]) {
+            // Seed their history with the past 4 local calendar dates so the engine knows they are valid!
+            const rescueDates = [
+                getLocalDateStringWithOffset(-4), // June 1
+                getLocalDateStringWithOffset(-3), // June 2
+                getLocalDateStringWithOffset(-2), // June 3
+                getLocalDateStringWithOffset(-1)  // June 4
+            ];
+            
+            localStorage.setItem('csatpurdue_completion_dates_log', JSON.stringify(rescueDates));
+            localStorage.setItem('csatpurdue_streak_count', 4);
+            localStorage.setItem('csatpurdue_last_read_date', yesterdayStr);
+            
+            console.log("🏆 June 5th Streak Rescue Active: 4-Day Streak successfully restored from reading history!");
+        }
+    }
 
-    if (lastReadDate !== todayStr && lastReadDate !== yesterdayStr) {
+    // --- Standard Streak Validation Continues Below ---
+    // Re-fetch log in case the rescue patch just populated it
+    const updatedHistoryLog = JSON.parse(localStorage.getItem('csatpurdue_completion_dates_log')) || [];
+
+    if (!updatedHistoryLog.includes(todayStr) && !updatedHistoryLog.includes(yesterdayStr)) {
         localStorage.setItem('csatpurdue_streak_count', 0);
+    }
+    
+    const currentStreak = parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0;
+    const displayElement = document.getElementById('streak-display-text');
+    if (displayElement) {
+        displayElement.innerText = `${currentStreak} Day Streak`;
     }
 }
