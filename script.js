@@ -133,8 +133,30 @@ function bootUpApplicationEngine() {
         });
 
         calculateStats();
-    }
 
+        const allRows = daysListContainer.querySelectorAll('.day-row-item');
+        let firstUnreadIndex = -1;
+
+        for (let i = 0; i < readingChallengeData.length; i++) {
+            if (!completedMap[readingChallengeData[i].id] && readingChallengeData[i].hasText) {
+                firstUnreadIndex = i;
+                break;
+            }
+        }
+
+        if (firstUnreadIndex > 0) {
+            const targetScrollIndex = Math.max(0, firstUnreadIndex - 3);
+            const targetRow = allRows[targetScrollIndex];
+
+            if (targetRow) {
+                setTimeout(() => {
+                    daysListContainer.scrollTop = targetRow.offsetTop - 10;
+                }, 80);
+            }
+        }
+        // 🟢 END OF PASTE ZONE
+        
+    } // 👈 This single bracket is your original one that closes initializeChallengeDashboard()
     // STATS & STREAK CALCULATIONS
     function calculateStats() {
         const completedMap = JSON.parse(localStorage.getItem('csatpurdue_reading_map')) || {};
@@ -567,7 +589,7 @@ function createLifeBadgeElement(container, filename, tooltipText) {
 
     updateHeader('home');
     verifyStreakValidityOnBoot();
- const latestAnnouncementId = "announcement_day_five_june5"; 
+ const latestAnnouncementId = "announcement_day_ten_june10"; 
     const announcementBadge = document.getElementById('announcement-badge');
     const announcementsTabButton = document.querySelector('.nav-btn[data-target="announcements"]');
 
