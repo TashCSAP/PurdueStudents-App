@@ -150,7 +150,7 @@ function bootUpApplicationEngine() {
 
             if (targetRow) {
                 setTimeout(() => {
-                    daysListContainer.scrollTop = targetRow.offsetTop - 10;
+                    daysListContainer.scrollTop = targetRow.offsetTop - 250;
                 }, 80);
             }
         }
@@ -589,7 +589,7 @@ function createLifeBadgeElement(container, filename, tooltipText) {
 
     updateHeader('home');
     verifyStreakValidityOnBoot();
- const latestAnnouncementId = "announcement_day_ten_june10"; 
+ const latestAnnouncementId = "announcement_day_ten_june10_revC"; 
     const announcementBadge = document.getElementById('announcement-badge');
     const announcementsTabButton = document.querySelector('.nav-btn[data-target="announcements"]');
 
