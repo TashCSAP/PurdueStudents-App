@@ -589,7 +589,7 @@ function createLifeBadgeElement(container, filename, tooltipText) {
 
     updateHeader('home');
     verifyStreakValidityOnBoot();
- const latestAnnouncementId = "announcement_day_ten_june10_revC"; 
+const latestAnnouncementId = "announcement_1tim3_complete_aug15";
     const announcementBadge = document.getElementById('announcement-badge');
     const announcementsTabButton = document.querySelector('.nav-btn[data-target="announcements"]');
 
