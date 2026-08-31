@@ -72,7 +72,7 @@ function bootUpApplicationEngine() {
     let currentActiveIndexReading = null;
     let autoScrollObserver = null;
 
-    // Fall 2026 Reading Schedule Definition
+   // Fall 2026 Reading Schedule Definition
     const READING_SCHEDULE = [
         { dateLabel: "Sept 2", assignment: "Titus 1-3", chapters: [{ book: "Titus", chapter: 1 }, { book: "Titus", chapter: 2 }, { book: "Titus", chapter: 3 }] },
         { dateLabel: "Sept 3", assignment: "Philemon", chapters: [{ book: "Philemon", chapter: 1 }] },
@@ -92,24 +92,26 @@ function bootUpApplicationEngine() {
         { dateLabel: "Sept 19", assignment: "1 Peter 2", chapters: [{ book: "1 Peter", chapter: 2 }] },
         { dateLabel: "Sept 21", assignment: "1 Peter 3", chapters: [{ book: "1 Peter", chapter: 3 }] },
         { dateLabel: "Sept 22", assignment: "1 Peter 4-5", chapters: [{ book: "1 Peter", chapter: 4 }, { book: "1 Peter", chapter: 5 }] },
-        { dateLabel: "Sept 23", assignment: "1 John 1-2", chapters: [{ book: "1 John", chapter: 1 }, { book: "1 John", chapter: 2 }] },
-        { dateLabel: "Sept 24", assignment: "1 John 3", chapters: [{ book: "1 John", chapter: 3 }] },
-        { dateLabel: "Sept 25", assignment: "1 John 4", chapters: [{ book: "1 John", chapter: 4 }] },
-        { dateLabel: "Sept 26", assignment: "1 John 5", chapters: [{ book: "1 John", chapter: 5 }] },
-        { dateLabel: "Sept 28", assignment: "2-3 John", chapters: [{ book: "2 John", chapter: 1 }, { book: "3 John", chapter: 1 }] },
-        { dateLabel: "Sept 29", assignment: "Jude", chapters: [{ book: "Jude", chapter: 1 }] },
-        { dateLabel: "Sept 30", assignment: "Revelation 1", chapters: [{ book: "Revelation", chapter: 1 }] },
-        { dateLabel: "Oct 1", assignment: "Revelation 2", chapters: [{ book: "Revelation", chapter: 2 }] },
-        { dateLabel: "Oct 2", assignment: "Revelation 3", chapters: [{ book: "Revelation", chapter: 3 }] },
-        { dateLabel: "Oct 3", assignment: "Revelation 4-6", chapters: [{ book: "Revelation", chapter: 4 }, { book: "Revelation", chapter: 5 }, { book: "Revelation", chapter: 6 }] },
-        { dateLabel: "Oct 5", assignment: "Revelation 7-8", chapters: [{ book: "Revelation", chapter: 7 }, { book: "Revelation", chapter: 8 }] },
-        { dateLabel: "Oct 6", assignment: "Revelation 9-10", chapters: [{ book: "Revelation", chapter: 9 }, { book: "Revelation", chapter: 10 }] },
-        { dateLabel: "Oct 7", assignment: "Revelation 11-12", chapters: [{ book: "Revelation", chapter: 11 }, { book: "Revelation", chapter: 12 }] },
-        { dateLabel: "Oct 8", assignment: "Revelation 13-14", chapters: [{ book: "Revelation", chapter: 13 }, { book: "Revelation", chapter: 14 }] },
-        { dateLabel: "Oct 9", assignment: "Revelation 15-17", chapters: [{ book: "Revelation", chapter: 15 }, { book: "Revelation", chapter: 16 }, { book: "Revelation", chapter: 17 }] },
-        { dateLabel: "Oct 10", assignment: "Revelation 18-20", chapters: [{ book: "Revelation", chapter: 18 }, { book: "Revelation", chapter: 19 }, { book: "Revelation", chapter: 20 }] },
-        { dateLabel: "Oct 12", assignment: "Revelation 21", chapters: [{ book: "Revelation", chapter: 21 }] },
-        { dateLabel: "Oct 13", assignment: "Revelation 22", chapters: [{ book: "Revelation", chapter: 22 }] }
+        { dateLabel: "Sept 23", assignment: "2 Peter 1", chapters: [{ book: "2 Peter", chapter: 1 }] },
+        { dateLabel: "Sept 24", assignment: "2 Peter 2-3", chapters: [{ book: "2 Peter", chapter: 2 }, { book: "2 Peter", chapter: 3 }] },
+        { dateLabel: "Sept 25", assignment: "1 John 1-2", chapters: [{ book: "1 John", chapter: 1 }, { book: "1 John", chapter: 2 }] },
+        { dateLabel: "Sept 26", assignment: "1 John 3", chapters: [{ book: "1 John", chapter: 3 }] },
+        { dateLabel: "Sept 28", assignment: "1 John 4", chapters: [{ book: "1 John", chapter: 4 }] },
+        { dateLabel: "Sept 29", assignment: "1 John 5", chapters: [{ book: "1 John", chapter: 5 }] },
+        { dateLabel: "Sept 30", assignment: "2-3 John", chapters: [{ book: "2 John", chapter: 1 }, { book: "3 John", chapter: 1 }] },
+        { dateLabel: "Oct 1", assignment: "Jude", chapters: [{ book: "Jude", chapter: 1 }] },
+        { dateLabel: "Oct 2", assignment: "Revelation 1", chapters: [{ book: "Revelation", chapter: 1 }] },
+        { dateLabel: "Oct 3", assignment: "Revelation 2", chapters: [{ book: "Revelation", chapter: 2 }] },
+        { dateLabel: "Oct 5", assignment: "Revelation 3", chapters: [{ book: "Revelation", chapter: 3 }] },
+        { dateLabel: "Oct 6", assignment: "Revelation 4-6", chapters: [{ book: "Revelation", chapter: 4 }, { book: "Revelation", chapter: 5 }, { book: "Revelation", chapter: 6 }] },
+        { dateLabel: "Oct 7", assignment: "Revelation 7-8", chapters: [{ book: "Revelation", chapter: 7 }, { book: "Revelation", chapter: 8 }] },
+        { dateLabel: "Oct 8", assignment: "Revelation 9-10", chapters: [{ book: "Revelation", chapter: 9 }, { book: "Revelation", chapter: 10 }] },
+        { dateLabel: "Oct 9", assignment: "Revelation 11-12", chapters: [{ book: "Revelation", chapter: 11 }, { book: "Revelation", chapter: 12 }] },
+        { dateLabel: "Oct 10", assignment: "Revelation 13-14", chapters: [{ book: "Revelation", chapter: 13 }, { book: "Revelation", chapter: 14 }] },
+        { dateLabel: "Oct 12", assignment: "Revelation 15-17", chapters: [{ book: "Revelation", chapter: 15 }, { book: "Revelation", chapter: 16 }, { book: "Revelation", chapter: 17 }] },
+        { dateLabel: "Oct 13", assignment: "Revelation 18-20", chapters: [{ book: "Revelation", chapter: 18 }, { book: "Revelation", chapter: 19 }, { book: "Revelation", chapter: 20 }] },
+        { dateLabel: "Oct 14", assignment: "Revelation 21", chapters: [{ book: "Revelation", chapter: 21 }] },
+        { dateLabel: "Oct 15", assignment: "Revelation 22", chapters: [{ book: "Revelation", chapter: 22 }] }
     ];
 
     // Old Testament 1-Year Reading Schedule Data
