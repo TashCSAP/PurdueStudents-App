@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +9,11 @@
     <link rel="icon" type="image/png" sizes="192x192" href="app-icon.png">
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDK Imports -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -24,26 +28,23 @@
                 </div>
 
                 <button class="dash-banner" id="btn-summer-supply">
-                    <img src="button-summer.png" alt="Summer Supply Background" class="dash-bg-img">
+                    <img src="button-summer.png" alt="Fall 2026 Background" class="dash-bg-img">
                     <div class="banner-side-label blue-label">
-                        <span class="vertical-text">Summer Supply</span>
+                        <span class="vertical-text">Bible Reading Challenge</span>
                     </div>
                 </button>
 
-                <button class="dash-banner" id="btn-daily-challenges">
-                    <img src="button-challenge.png" alt="Daily Challenges Background" class="dash-bg-img">
-                    <div class="banner-side-label gold-label">
-                        <span class="vertical-text">Life Practice Challenges</span>
-                    </div>
-                </button>
+               <button class="dash-banner" id="btn-daily-challenges">
+    <img src="button-challenge.png" alt="OT Reading Schedule Background" class="dash-bg-img">
+    <div class="banner-side-label gold-label">
+        <span class="vertical-text">OT Bible Schedule</span>
+    </div>
+</button>
 
-                <button class="dash-banner" id="btn-eating-word">
-                    <img src="button-eatgodsword.png" alt="Eating God's Word Background" class="dash-bg-img">
-                    <div class="banner-side-label green-label">
-                        <span class="vertical-text">Eating God's Word</span>
-                    </div>
-                </button>
-            </div> 
+               <div class="dash-banner">
+    <img src="Fall Students.png" alt="Fall Students" class="dash-bg-img">
+</div>
+</div> 
             
             <div id="about-page" class="app-page">
                 <div class="about-hero-banner">
@@ -60,14 +61,6 @@
                     <p>Our goal is to provide Purdue University students with a genuine community of believers with whom they can pursue Christ (Phil. 3:8, 2 Tim. 2:22), to solidify them in the truth of God's word, and to equip them for their futures in God's Purpose.</p>
                 </div>
 
-                <div class="contact-card">
-                    <h3>Join us in the Journey</h3>
-                    <p>Christian Students at Purdue warmly invites students from every background and level of spiritual growth to join our family. If you are looking for a place to grow in Christ, we welcome you to join us on our journey to make an impact for God's kingdom.</p>
-                    <p style="margin-top: 12px;">
-                        You can send us a message <a href="https://docs.google.com/forms/d/e/1FAIpQLSeoybxB0iloLkjAx3hUu2oVptuEDCj1u6AT6iaXCYtdFDWL1g/viewform?usp=dialog" target="_blank" class="app-link" id="google-form-placeholder">here</a> if you are interested in getting in touch.
-                    </p>
-                </div>
-
                 <button id="btn-common-faith" class="about-action-btn">
                     <span>Our Faith</span>
                     <span class="arrow-icon">➔</span>
@@ -75,47 +68,99 @@
             </div> 
             
             <div id="common-faith-page" class="app-page">
-                <button id="back-to-about-btn" class="universal-back-arrow-btn">←</button>
-                
-                <div class="scripture-header-card">
-                    <h2 class="faith-heading">We hold the faith which is common to all believers</h2>
-                    <p class="scripture-text">"To Titus, genuine child according to the common faith: Grace and peace from God the Father and from Jesus Christ our Savior."</p>
-                    <p class="scripture-reference">-Titus 1:4</p>
-                </div>
-            </div> 
-            
-        <div id="announcements-page" class="app-page">
-            <div class="info-card">
-                <h3>1 Timothy 3 Scripture Update</h3>
-                <p style="font-size: 0.8rem; color: #8E8E93; margin-bottom: 10px; font-weight: 600;">AUGUST 15, 2026</p>
-                <p>If you noticed that today's last verse (1 Timothy 3:16) was missing some text, congratulations! You are doing awesome and we are almost done with 11 epistles this summer!</p>
-                <p style="margin-top: 10px;">If you didn't notice, that's ok too! If you haven't read anything yet, you can still pick this up and read ONE WHOLE BOOK before school starts. We begin 2 Timothy next week!</p>
-            </div>
+    <button id="back-to-about-btn" class="universal-back-arrow-btn">←</button>
+    
+    <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div class="scripture-header-card">
+            <h2 class="faith-heading">We hold the faith which is common to all believers</h2>
+            <p class="scripture-text">"To Titus, genuine child according to the common faith: Grace and peace from God the Father and from Jesus Christ our Savior."</p>
+            <p class="scripture-reference">- Titus 1:4</p>
+        </div>
 
-            <div class="info-card">
-                <h3>Encouragement from our Day 10 Reading</h3>
-                <p style="font-size: 0.8rem; color: #8E8E93; margin-bottom: 10px; font-weight: 600;">JUNE 10, 2026</p>
-                <p style="font-style: italic; margin-bottom: 8px; color: #4A709C;">
-                    "The word is near you, in your mouth and in your heart" 
-                    — Romans 10:8
-                </p>
-                <p>May we continue in the word day by day!</p>
-            </div>
+        <div class="info-card">
+            <h3 style="margin-bottom: 6px;">The Bible</h3>
+            <p style="margin-bottom: 8px;">The Bible is the complete divine revelation inspired word by word by God through the Holy Spirit.</p>
+            <p style="font-size: 0.85rem; color: #4A709C; font-weight: 600;">— 2 Pet. 1:21, 2 Tim. 3:16</p>
+        </div>
 
-    <div class="info-card">
-        <h3>Happy Day Five Friday!</h3>
-        <p style="font-size: 0.8rem; color: #8E8E93; margin-bottom: 10px; font-weight: 600;">JUNE 5, 2026</p>
-        <p style="font-style: italic; margin-bottom: 8px; color: #4A709C;">
-            "Your word is a lamp to my feet and a light to my path." 
-            — Psalm 119:105
-        </p>
-        <p>Let's keep pressing on together and push ourselves to stay in the Word! If you got behind, don't give up! You can still catch up! The things that matter the most always come with a price.</p>
+        <div class="info-card">
+            <h3 style="margin-bottom: 6px;">God</h3>
+            <p style="margin-bottom: 8px;">God is uniquely one, yet triune — the Father, the Son, and the Spirit.</p>
+            <p style="font-size: 0.85rem; color: #4A709C; font-weight: 600;">— 1 Tim. 2:5a, Matt. 28:19</p>
+        </div>
+
+        <div class="info-card">
+            <h3 style="margin-bottom: 6px;">Jesus Christ</h3>
+            <p style="margin-bottom: 8px;">The Son of God, even God Himself, was incarnated to be a man by the name of Jesus Christ.</p>
+            <p style="font-size: 0.85rem; color: #4A709C; font-weight: 600;">— John 1:1, John 1:14</p>
+        </div>
+
+        <div class="info-card">
+            <h3 style="margin-bottom: 6px;">Redemption</h3>
+            <p style="margin-bottom: 8px;">Jesus died on the cross for our sins, shedding His blood for our redemption.</p>
+            <p style="font-size: 0.85rem; color: #4A709C; font-weight: 600;">— 1 Pet. 2:24, Eph. 1:7a</p>
+        </div>
+
+        <div class="info-card">
+            <h3 style="margin-bottom: 6px;">Resurrection</h3>
+            <p style="margin-bottom: 8px;">Jesus resurrected from among the dead on the third day.</p>
+            <p style="font-size: 0.85rem; color: #4A709C; font-weight: 600;">— 1 Cor. 15:4</p>
+        </div>
+
+        <div class="info-card">
+            <h3 style="margin-bottom: 6px;">Salvation Through Faith</h3>
+            <p style="margin-bottom: 8px;">Whenever any person repents to God and believes in the Lord Jesus Christ, he is regenerated (born again) and becomes a living member of the one Body of Christ.</p>
+            <p style="font-size: 0.85rem; color: #4A709C; font-weight: 600;">— Acts 20:21, John 3:3, Eph. 1:22-23, Rom. 12:5</p>
+        </div>
+
+        <div class="info-card">
+            <h3 style="margin-bottom: 6px;">The Lord is Coming Again a Second Time</h3>
+            <p style="margin-bottom: 8px;">Christ is coming again to receive His believers to Himself.</p>
+            <p style="font-size: 0.85rem; color: #4A709C; font-weight: 600;">— 1 Thes. 2:19</p>
+        </div>
     </div>
 </div>
+            
+            <div id="announcements-page" class="app-page">
+                <div class="page-content-wrapper" style="padding: 16px;">
+                    
+                    <!-- Title & Date Range Subtitle -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="font-size: 1.5rem; font-weight: 700; color: #0F172A; margin: 0 0 4px 0;">Weekly Announcements</h2>
+                        <span style="font-size: 0.9rem; font-weight: 600; color: #4A709C;">August 31 – September 6</span>
+                    </div>
+
+                    <!-- Section 1: Daily Devotional Week -->
+                    <div class="announcement-card-box">
+                        <h3 class="announcement-card-title">Daily Devotional Week</h3>
+                        <p class="announcement-card-text">Week 46 of the Holy Word For Morning Revival Experiencing, Enjoying, and Expressing Christ vol. 8: <strong>Christ - the Establisher of the Kingdom and the Word of God - King of Kings and Lord of Lords</strong>.</p>
+                    </div>
+
+                    <!-- Section 2: Home Meeting Locations -->
+                    <div class="announcement-card-box">
+                        <h3 class="announcement-card-title">Home Meeting Locations</h3>
+                        <p class="announcement-card-text">No home meetings this weekend. </p>
+                    </div>
+
+                    <!-- Section 3: Prayer Meeting Location -->
+                    <div class="announcement-card-box">
+                        <h3 class="announcement-card-title">Prayer Meeting Location</h3>
+                        <p class="announcement-card-text">Tuesday night at 7:30 at Simeon and Sheena's home.</p>
+                    </div>
+
+                    <!-- Section 4: Other Announcements -->
+                    <div class="announcement-card-box">
+                        <h3 class="announcement-card-title">Other Announcements</h3>
+                        <p class="announcement-card-text">Labor Day Mini-Conference this weekend! Saturday from 10-3 at the Meeting Hall. Lord's Day from 10-1 at the Meeting Hall. Lunch provided both days.</p>
+                    </div>
+
+                </div>
+            </div>
+
             <div id="media-page" class="app-page">
                 <div class="info-card">
                     <h3>Media</h3>
-                    <p>Coming soon. Access audio recordings,and video archives here.</p>
+                    <p>Coming soon. Access audio recordings, and video archives here.</p>
                 </div>
             </div>
 
@@ -126,12 +171,83 @@
                 </div>
             </div>
 
+            <!-- Profile & Authentication View -->
+            <div id="profile-page" class="app-page">
+                <!-- Logged Out Container -->
+                <div id="auth-box-container" class="info-card">
+                    <h2 id="auth-title">Welcome</h2>
+                    <p id="auth-subtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Create an account to save reading progress across your devices.</p>
+                    
+                    <form id="auth-form">
+                        <input type="text" id="auth-name" placeholder="Full Name" required class="auth-input-field">
+                        <input type="email" id="auth-email" placeholder="Email Address" required class="auth-input-field">
+                        <input type="password" id="auth-password" placeholder="Password (6+ chars)" required class="auth-input-field">
+                        
+                        <button type="submit" id="auth-submit-btn" class="auth-action-btn">Sign Up</button>
+                    </form>
+                    
+                    <p class="auth-toggle-text">
+                        <span id="auth-toggle-msg">Already have an account?</span>
+                        <button type="button" id="auth-toggle-btn" class="auth-text-btn">Log In</button>
+                    </p>
+                </div>
+
+                <!-- Logged In User Card Container -->
+                <div id="logged-in-container" class="info-card" style="display: none;">
+                    <div class="user-avatar-circle">👤</div>
+                    <h2 id="user-display-name">Student Name</h2>
+                    <p id="user-display-email" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">student@purdue.edu</p>
+
+                    <div class="user-stats-summary-box">
+                        <div class="stat-pill">
+                            <span class="stat-pill-label">Streak</span>
+                            <span id="profile-streak-count" class="stat-pill-value">🔥 0 Days</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-pill-label">Completed</span>
+                            <span id="profile-chapters-count" class="stat-pill-value">0 / 83</span>
+                        </div>
+                    </div>
+
+                    <button id="btn-open-admin-view" class="about-action-btn" style="display: none; margin-bottom: 12px; background: #10B981; border: none; color: white;">
+                        👑 Open Admin Dashboard
+                    </button>
+
+                    <button id="auth-logout-btn" class="auth-secondary-btn">Log Out</button>
+                </div>
+            </div>
+
+            <!-- Admin Live Overview Dashboard Page -->
+            <div id="admin-page" class="app-page">
+                <button id="back-to-profile-from-admin" class="universal-back-arrow-btn">←</button>
+                
+                <div class="challenge-stats-card">
+                    <h2 class="challenge-title">Reading Dashboard</h2>
+                    <p class="challenge-subtitle">Live reading profiles & streaks of all registered students.</p>
+                </div>
+
+                <div class="admin-table-wrapper">
+                    <table class="admin-data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Streak</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-students-table-body">
+                            <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Loading member profiles...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div id="summer-supply-page" class="app-page">
                 <button id="back-to-home-from-summer" class="universal-back-arrow-btn">←</button>
                 
                 <div class="challenge-stats-card">
-                    <h2 class="challenge-title">One Summer. Eleven of Paul's Epistles.</h2>
-                    <p class="challenge-subtitle">June 1 – August 23, 2026</p>
+                    <h2 class="challenge-title">Fall 2026 Bible Reading</h2>
+                    <p class="challenge-subtitle">September 2 – October 13</p>
                     
                     <div class="badges-scroll-viewport" id="badges-container-row"></div>
                     
@@ -174,28 +290,6 @@
                 </div>
             </div> 
             
-            <div id="eating-gods-word-page" class="app-page">
-                <div class="reader-sticky-header">
-                    <button id="back-to-home-from-eating" class="universal-back-arrow-btn">←</button>
-                    <div class="reader-meta">
-                        <h2 class="section-main-title">Eating God's Word</h2>
-                    </div>
-                </div>
-
-                <div class="page-scroll-viewport">
-                    <div class="scripture-quote-banner">
-                        <p class="banner-quote-text">“Man shall not live on bread alone, but on every word that proceeds out through the mouth of God.”</p>
-                        <span class="banner-quote-reference">Matthew 4:4</span>
-                    </div>
-
-                    <div class="horizontal-deck-container">
-                        <div class="horizontal-scroll-track" id="ministry-card-track"></div>
-                    </div>
-
-                    <h3 class="subsection-label">Choose a verse. Pray over it. Mark it off.</h3>
-                    <div class="juicy-verses-checklist" id="juicy-verses-container"></div>
-                </div>
-            </div>
 
             <div id="image-fullscreen-modal" class="image-modal-overlay" style="display: none;">
                 <button id="close-image-modal" class="modal-close-x">✕</button>
@@ -204,20 +298,28 @@
                 </div>
             </div>
 
-            <div id="life-challenges-page" class="app-page">
-    <button id="back-to-home-from-life" class="universal-back-arrow-btn">←</button>
+           <div id="ot-schedule-page" class="app-page">
+    <button id="back-to-home-from-ot" class="universal-back-arrow-btn">←</button>
     
     <div class="challenge-stats-card">
-        <h2 class="challenge-title">Challenge the Divine Life Within You</h2>
-        <p class="challenge-subtitle">Pick a challenge and complete it. Jot down your experience. No one else will see what you write, this is for your own pursuit.</p>
+        <h2 class="challenge-title">Old Testament Reading Schedule</h2>
+        <p class="challenge-subtitle">Read through the Old Testament in a calendar year.</p>
         
-        <div class="badges-scroll-viewport" id="life-badges-container-row"></div>
+        <div class="progress-container" style="margin-top: 12px;">
+            <div class="progress-text-row">
+                <span id="ot-progress-count-string">0 of 121 completed</span>
+                <span id="ot-progress-percent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="ot-progress-bar-fill" class="progress-bar-fill" style="width: 0%; height: 100%; background: #EAB308;"></div>
+            </div>
+        </div>
     </div>
 
-    <div id="life-practices-scroll-track" class="life-challenges-scroll-track"></div>
+    <div id="ot-days-list" class="days-vertical-list" style="padding: 16px;"></div>
 </div>
 
-      </div> 
+        </div> 
         <nav id="bottom-nav">
             <button class="nav-btn active" data-target="home">
                 <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -227,7 +329,6 @@
                 <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                 <span class="nav-text">About</span>
             </button>
-            
             <button class="nav-btn" data-target="announcements">
                 <div style="position: relative; display: inline-block;">
                     <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M20 12V7H4v5H2v2h20v-2h-2zm-2-3v3H6V9h12zm-7 5h2v4h-2v-4z"/></svg>
@@ -235,19 +336,13 @@
                 </div>
                 <span class="nav-text">Announcements</span>
             </button>
-            
             <button class="nav-btn" data-target="media">
                 <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
                 <span class="nav-text">Media</span>
             </button>
-            <button class="nav-btn" data-target="gospel">
-                <svg class="nav-icon-svg" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" stroke-width="2" fill="none"/>
-                    <circle cx="12" cy="12" r="6" stroke-width="1.5" fill="none"/>
-                    <circle cx="12" cy="12" r="2"/>
-                    <path d="M19 5l3-3M22 5h-3M22 2v3" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span class="nav-text">Gospel</span>
+            <button class="nav-btn" data-target="profile">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span class="nav-text">Profile</span>
             </button>
         </nav>
     </main>
