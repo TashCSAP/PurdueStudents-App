@@ -489,6 +489,9 @@ body {
     overflow-y: auto;        /* Activates a crisp, independent internal scrollway */
     scroll-behavior: smooth; /* Forces a beautifully smooth slide transition when centering */
     padding-right: 4px;      /* Adds breathing room for the native scrolling track */
+    
+    /* 🟢 NEW: Allows JavaScript to accurately calculate pixel positions inside the scrollway */
+    position: relative; 
 }
 
 .day-row-item {
@@ -1151,3 +1154,150 @@ body {
     border-radius: 50%;
     border: 1.5px solid var(--purdue-black); /* Blends into your bottom nav bar */
 }
+
+/* USER PROFILE & AUTHENTICATION STYLES */
+.auth-input-field {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.auth-input-field:focus {
+    border-color: var(--purdue-gold);
+}
+
+.auth-action-btn {
+    width: 100%;
+    background-color: var(--purdue-black);
+    color: var(--purdue-gold);
+    border: 1px solid var(--purdue-gold);
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.auth-secondary-btn {
+    width: 100%;
+    background-color: transparent;
+    color: #EF4444;
+    border: 1px solid #EF4444;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-toggle-text {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.auth-text-btn {
+    background: none;
+    border: none;
+    color: #4A709C;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.user-avatar-circle {
+    width: 70px;
+    height: 70px;
+    background-color: #F3F4F6;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    margin: 0 auto 12px auto;
+}
+
+.user-stats-summary-box {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-pill {
+    flex: 1;
+    background-color: #F9FAFB;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-pill-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.stat-pill-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--purdue-black);
+    margin-top: 4px;
+}
+
+/* ADMIN DASHBOARD STYLES */
+.admin-table-wrapper {
+    background-color: var(--white);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    overflow-x: auto;
+}
+
+.admin-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.admin-data-table th {
+    padding: 10px;
+    border-bottom: 2px solid #E5E7EB;
+    color: var(--purdue-black);
+    font-weight: 700;
+}
+
+.admin-data-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+/* Grey Rounded Announcement Section Cards */
+.announcement-card-box {
+    background-color: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+}
+
+.announcement-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0 0 6px 0;
+}
+
+.announcement-card-text {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0;
