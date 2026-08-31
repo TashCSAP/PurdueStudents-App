@@ -796,7 +796,7 @@ function parseRawScriptureText() {
         const line = lines[i].trim();
         if (!line) continue;
 
-        if (line.startsWith("The Epistle") || line.startsWith("The First Epistle") || line.startsWith("The Second Epistle") || line.startsWith("The Revelation")) {
+        if (line.startsWith("The Epistle") || line.startsWith("The First Epistle") || line.startsWith("The Second Epistle") || line.startsWith("The Third Epistle") || line.startsWith("The Revelation")) {
             lastSeenTitle = line;
             isCapturingSubject = false;
             continue;
@@ -808,27 +808,35 @@ function parseRawScriptureText() {
             continue;
         }
 
-        if (line.includes("Chapter")) {
+        // Updated check: Matches "Chapter" OR single-chapter book headers
+        if (line.includes("Chapter") || line.includes("Philemon") || line.includes("2 John") || line.includes("3 John") || line.includes("Jude")) {
             isCapturingSubject = false;
-            const parts = line.split("Chapter");
-            currentBookName = parts[0].trim();
-            
+            if (line.includes("Chapter")) {
+                const parts = line.split("Chapter");
+                currentBookName = parts[0].trim();
+            } else if (line.includes("Philemon")) currentBookName = "Philemon";
+            else if (line.includes("2 John")) currentBookName = "2 John";
+            else if (line.includes("3 John")) currentBookName = "3 John";
+            else if (line.includes("Jude")) currentBookName = "Jude";
+
             if (lastSeenTitle && currentBookName) dynamicBookTitles[currentBookName] = lastSeenTitle;
             if (subjectBuffer.length > 0 && currentBookName) dynamicBookSubjects[currentBookName] = subjectBuffer.join(" ");
-            continue;
+            if (line.includes("Chapter")) continue;
         }
 
-        if (isCapturingSubject && !line.match(/^([1-4]?\s*[A-Za-z.]+)\s*\d+:/)) {
+        if (isCapturingSubject && !line.match(/^([1-4]?\s*[A-Za-z.]+)\s*\d+/)) {
             subjectBuffer.push(line);
             continue;
         }
 
-        const universalPattern = /^([1-4]?\s*[A-Za-z.]+)\s*(\d+):(\d+)\s*(.*)/;
+        // Matches both standard "Book 1:1 text" AND single-chapter "Book 1 text"
+        const universalPattern = /^([1-4]?\s*[A-Za-z.]+)\s*(?:(\d+):)?(\d+)\s+(.*)/;
         const match = line.match(universalPattern);
 
         if (match) {
             isCapturingSubject = false;
-            const chapterNum = parseInt(match[2], 10);
+            // If there's no colon, default the chapter to 1
+            const chapterNum = match[2] ? parseInt(match[2], 10) : 1; 
             const verseText = match[4].trim();
 
             let normalizedBook = currentBookName;
