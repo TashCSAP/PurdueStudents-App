@@ -908,11 +908,8 @@ function initializeMinistryDeck() {
     // Eating God's Word deck initialization
 }
 
-function loadAndBuildJuicyVerses() {
-    // Eating God's Word verse checklist
-}
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('ScriptureDataLoaded', () => {
     parseRawScriptureText();
     bootUpApplicationEngine();
 });
