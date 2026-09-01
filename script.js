@@ -655,16 +655,8 @@ function bootUpApplicationEngine() {
             appHeader.classList.add('hidden-header');
         } else {
             appHeader.classList.remove('hidden-header');
-            const titles = {
-                'about': "About Us",
-                'announcements': "Announcements",
-                'media': "Media Center",
-                'gospel': "The Gospel",
-                'summer_supply': "Summer Supply",
-                'faith': "Our Faith",
-                'profile': "User Profile"
-            };
-            headerTitle.innerText = titles[section] || "Christian Students at Purdue";
+            // Keeps the top header bar space on every page, but sets the text to empty
+            headerTitle.innerText = "";
         }
     }
 
