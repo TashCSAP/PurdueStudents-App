@@ -118,7 +118,7 @@ function bootUpApplicationEngine() {
 
     // Old Testament 1-Year Reading Schedule Data
     const OT_SCHEDULE = [
-        { id: "ot_1", dateLabel: "Sep 2", assignment: "Psalms 119–121" },
+        { id: "ot_1", dateLabel: "Sep 2", assignment: "Psalms 120–121" },
         { id: "ot_2", dateLabel: "Sep 3", assignment: "Psalms 122–124" },
         { id: "ot_3", dateLabel: "Sep 4", assignment: "Psalms 125–127" },
         { id: "ot_4", dateLabel: "Sep 5", assignment: "Psalms 128–130" },
