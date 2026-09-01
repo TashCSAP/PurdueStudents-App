@@ -19,8 +19,10 @@ let userReadingMap = {};
 let isSignUpMode = true;
 const LOCAL_STORAGE_KEY = 'csatpurdue_reading_tracker_v1';
 
-// 🟢 SET YOUR ADMIN EMAIL HERE:
-const ADMIN_EMAIL = "hylander144@gmail.com"; 
+const ADMIN_EMAILS = [
+    "hylander144@gmail.com",
+    "mvmcgrady@gmail.com" // Add your coworker's email address here
+];
 
 function bootUpApplicationEngine() {
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -264,11 +266,14 @@ function bootUpApplicationEngine() {
                 initializeChallengeDashboard();
             });
 
-            if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                btnOpenAdminView.style.display = 'block';
-            } else {
-                btnOpenAdminView.style.display = 'none';
-            }
+            const userEmailClean = user.email.toLowerCase();
+const isAdmin = ADMIN_EMAILS.some(email => email.toLowerCase() === userEmailClean);
+
+if (isAdmin) {
+    btnOpenAdminView.style.display = 'block';
+} else {
+    btnOpenAdminView.style.display = 'none';
+}
 
         } else {
             authBoxContainer.style.display = 'block';
