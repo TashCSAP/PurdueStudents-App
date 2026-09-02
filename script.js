@@ -18,6 +18,8 @@ let currentUser = null;
 let userReadingMap = {};
 let isSignUpMode = true;
 const LOCAL_STORAGE_KEY = 'csatpurdue_reading_tracker_v1';
+let userHighlightsMap = {};
+const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -261,6 +263,7 @@ function bootUpApplicationEngine() {
                     const data = doc.data();
                     userDisplayName.innerText = data.displayName || "Student";
                     userReadingMap = data.readingMap || {};
+                    userHighlightsMap = data.highlights || {};
                 }
                 calculateStats();
                 initializeChallengeDashboard();
@@ -279,6 +282,7 @@ if (isAdmin) {
             authBoxContainer.style.display = 'block';
             loggedInContainer.style.display = 'none';
             userReadingMap = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || {};
+            userHighlightsMap = JSON.parse(localStorage.getItem(HIGHLIGHTS_STORAGE_KEY)) || {};
             calculateStats();
             initializeChallengeDashboard();
         }
@@ -555,11 +559,19 @@ if (isAdmin) {
                     `;
                 }
 
-                let cleanVersesHTML = '';
+               let cleanVersesHTML = '';
                 if (bibleTextDatabase[chItem.book] && bibleTextDatabase[chItem.book][chItem.chapter]) {
                     const versesArray = bibleTextDatabase[chItem.book][chItem.chapter];
                     versesArray.forEach((verseText, index) => {
-                        cleanVersesHTML += `<p><span class="clean-verse-num">${chItem.book} ${chItem.chapter}:${index + 1}</span> ${verseText}</p>`;
+                        const verseNum = index + 1;
+                        const verseId = `${chItem.book}_${chItem.chapter}_${verseNum}`.replace(/\s+/g, '_');
+                        const savedColor = userHighlightsMap[verseId];
+                        const highlightClass = savedColor ? `hl-${savedColor}` : '';
+
+                        cleanVersesHTML += `
+                            <p class="bible-verse-p ${highlightClass}" data-verse-id="${verseId}">
+                                <span class="clean-verse-num">${chItem.book} ${chItem.chapter}:${verseNum}</span> ${verseText}
+                            </p>`;
                     });
                 } else {
                     cleanVersesHTML += `<p class="scripture-loading-placeholder">[ Scripture text for ${chItem.book} Chapter ${chItem.chapter} is processing... ]</p>`;
@@ -579,9 +591,9 @@ if (isAdmin) {
                 </p>
             `;
 
-            bibleTextContentTarget.innerHTML = htmlOutput;
+           bibleTextContentTarget.innerHTML = htmlOutput;
+            attachVerseLongPressListeners();
         }
-
         showPage(scriptureReaderPage);
         updateHeader('reader_mode');
         
@@ -920,3 +932,79 @@ document.addEventListener('ScriptureDataLoaded', () => {
     parseRawScriptureText();
     bootUpApplicationEngine();
 });
+
+let pressTimer = null;
+let selectedVerseEl = null;
+
+function attachVerseLongPressListeners() {
+    const verseEls = document.querySelectorAll('.bible-verse-p');
+
+    verseEls.forEach(el => {
+        const startPress = (e) => {
+            pressTimer = setTimeout(() => {
+                selectedVerseEl = el;
+                showHighlightPopover(el, e);
+            }, 500);
+        };
+
+        const cancelPress = () => clearTimeout(pressTimer);
+
+        el.addEventListener('touchstart', startPress, { passive: true });
+        el.addEventListener('touchend', cancelPress);
+        el.addEventListener('touchmove', cancelPress);
+        el.addEventListener('mousedown', startPress);
+        el.addEventListener('mouseup', cancelPress);
+        el.addEventListener('mouseleave', cancelPress);
+    });
+}
+
+function showHighlightPopover(element, event) {
+    const popover = document.getElementById('highlight-popover');
+    if (!popover) return;
+
+    const rect = element.getBoundingClientRect();
+    popover.style.top = `${rect.top + window.scrollY}px`;
+    popover.style.left = `${rect.left + (rect.width / 2)}px`;
+    popover.style.display = 'flex';
+}
+
+document.addEventListener('click', (e) => {
+    const popover = document.getElementById('highlight-popover');
+    if (!popover) return;
+    
+    if (e.target.classList.contains('hl-color-btn')) {
+        const color = e.target.getAttribute('data-color');
+        applyVerseHighlight(color);
+    } else if (e.target.id === 'hl-remove-btn') {
+        applyVerseHighlight(null);
+    } else if (!popover.contains(e.target) && selectedVerseEl && !selectedVerseEl.contains(e.target)) {
+        popover.style.display = 'none';
+    }
+});
+
+function applyVerseHighlight(color) {
+    if (!selectedVerseEl) return;
+    const verseId = selectedVerseEl.getAttribute('data-verse-id');
+    
+    selectedVerseEl.classList.remove('hl-yellow', 'hl-blue', 'hl-pink');
+
+    if (color) {
+        selectedVerseEl.classList.add(`hl-${color}`);
+        userHighlightsMap[verseId] = color;
+    } else {
+        delete userHighlightsMap[verseId];
+    }
+
+    document.getElementById('highlight-popover').style.display = 'none';
+    saveUserHighlights();
+}
+
+function saveUserHighlights() {
+    if (currentUser) {
+        db.collection('users').doc(currentUser.uid).update({
+            highlights: userHighlightsMap
+        }).catch(err => console.error("Error saving highlights to Firebase:", err));
+    } else {
+        localStorage.setItem(HIGHLIGHTS_STORAGE_KEY, JSON.stringify(userHighlightsMap));
+    }
+}

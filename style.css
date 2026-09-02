@@ -1301,3 +1301,52 @@ body {
     color: #475569;
     line-height: 1.5;
     margin: 0;
+
+    /* Highlight Color Styles */
+.hl-yellow { background-color: #FEF08A !important; border-radius: 3px; padding: 1px 2px; }
+.hl-blue   { background-color: #BAE6FD !important; border-radius: 3px; padding: 1px 2px; }
+.hl-pink   { background-color: #FBCFE8 !important; border-radius: 3px; padding: 1px 2px; }
+
+/* Verse Paragraph Touch Styling */
+.bible-verse-p {
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+/* Floating Highlight Picker Popover */
+#highlight-popover {
+    position: fixed;
+    z-index: 10000;
+    background: #1E293B;
+    border-radius: 20px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transform: translate(-50%, -100%);
+    margin-top: -10px;
+}
+
+.hl-color-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+    cursor: pointer;
+}
+.hl-btn-yellow { background-color: #FEF08A; }
+.hl-btn-blue   { background-color: #BAE6FD; }
+.hl-btn-pink   { background-color: #FBCFE8; }
+
+.hl-remove-btn {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 6px;
+}
