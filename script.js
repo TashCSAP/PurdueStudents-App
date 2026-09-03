@@ -21,9 +21,12 @@ const LOCAL_STORAGE_KEY = 'csatpurdue_reading_tracker_v1';
 let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
+// Update this string whenever you post a new announcement in index.html!
+const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_2_2026';
+
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
-    "mvmcgrady@gmail.com" // Add your coworker's email address here
+    "mvmcgrady@gmail.com"
 ];
 
 function bootUpApplicationEngine() {
@@ -76,7 +79,6 @@ function bootUpApplicationEngine() {
     let currentActiveIndexReading = null;
     let autoScrollObserver = null;
 
-   // Fall 2026 Reading Schedule Definition
     const READING_SCHEDULE = [
         { dateLabel: "Sept 2", assignment: "Titus 1-3", chapters: [{ book: "Titus", chapter: 1 }, { book: "Titus", chapter: 2 }, { book: "Titus", chapter: 3 }] },
         { dateLabel: "Sept 3", assignment: "Philemon", chapters: [{ book: "Philemon", chapter: 1 }] },
@@ -118,7 +120,6 @@ function bootUpApplicationEngine() {
         { dateLabel: "Oct 15", assignment: "Revelation 22", chapters: [{ book: "Revelation", chapter: 22 }] }
     ];
 
-    // Old Testament 1-Year Reading Schedule Data
     const OT_SCHEDULE = [
         { id: "ot_1", dateLabel: "Sep 2", assignment: "Psalms 120–121" },
         { id: "ot_2", dateLabel: "Sep 3", assignment: "Psalms 122–124" },
@@ -270,13 +271,13 @@ function bootUpApplicationEngine() {
             });
 
             const userEmailClean = user.email.toLowerCase();
-const isAdmin = ADMIN_EMAILS.some(email => email.toLowerCase() === userEmailClean);
+            const isAdmin = ADMIN_EMAILS.some(email => email.toLowerCase() === userEmailClean);
 
-if (isAdmin) {
-    btnOpenAdminView.style.display = 'block';
-} else {
-    btnOpenAdminView.style.display = 'none';
-}
+            if (isAdmin) {
+                btnOpenAdminView.style.display = 'block';
+            } else {
+                btnOpenAdminView.style.display = 'none';
+            }
 
         } else {
             authBoxContainer.style.display = 'block';
@@ -544,9 +545,29 @@ if (isAdmin) {
         if (bibleTextContentTarget) {
             let htmlOutput = ``;
 
-            dayItem.chapters.forEach(chItem => {
+           dayItem.chapters.forEach(chItem => {
                 if (chItem.chapter === 1) {
-                    const currentTitle = dynamicBookTitles[chItem.book] || `${chItem.book}`;
+                    const explicitBookTitles = {
+                        "Titus": "The Epistle of Paul to Titus",
+                        "Philemon": "The Epistle of Paul to Philemon",
+                        "Hebrews": "The Epistle to the Hebrews",
+                        "James": "The Epistle of James",
+                        "1 Peter": "The First Epistle of Peter",
+                        "2 Peter": "The Second Epistle of Peter",
+                        "1 John": "The First Epistle of John",
+                        "2 John": "The Second Epistle of John",
+                        "3 John": "The Third Epistle of John",
+                        "Jude": "The Epistle of Jude",
+                        "Revelation": "Revelation"
+                    };
+
+                    let rawTitle = explicitBookTitles[chItem.book] || dynamicBookTitles[chItem.book];
+                    
+                    if (!rawTitle || (rawTitle.includes("Hebrews") && chItem.book !== "Hebrews")) {
+                        rawTitle = `The Book of ${chItem.book}`;
+                    }
+
+                    const currentTitle = rawTitle;
                     const currentSubject = dynamicBookSubjects[chItem.book] || "Subject description text is parsing...";
 
                     htmlOutput += `
@@ -559,7 +580,7 @@ if (isAdmin) {
                     `;
                 }
 
-               let cleanVersesHTML = '';
+                let cleanVersesHTML = '';
                 if (bibleTextDatabase[chItem.book] && bibleTextDatabase[chItem.book][chItem.chapter]) {
                     const versesArray = bibleTextDatabase[chItem.book][chItem.chapter];
                     versesArray.forEach((verseText, index) => {
@@ -591,7 +612,7 @@ if (isAdmin) {
                 </p>
             `;
 
-           bibleTextContentTarget.innerHTML = htmlOutput;
+            bibleTextContentTarget.innerHTML = htmlOutput;
             attachVerseLongPressListeners();
         }
         showPage(scriptureReaderPage);
@@ -650,6 +671,18 @@ if (isAdmin) {
         }
     }
 
+    const announcementBadge = document.getElementById('announcement-badge');
+    const lastSeenAnnouncement = localStorage.getItem('csatpurdue_last_seen_announcement');
+
+    // Show badge on startup if user hasn't seen the latest announcement
+    if (announcementBadge) {
+        if (lastSeenAnnouncement !== LATEST_ANNOUNCEMENT_ID) {
+            announcementBadge.style.display = 'inline-block';
+        } else {
+            announcementBadge.style.display = 'none';
+        }
+    }
+
     navButtons.forEach(button => {
         button.addEventListener('click', () => {
             const currentActiveBtn = document.querySelector('.nav-btn.active');
@@ -657,6 +690,15 @@ if (isAdmin) {
             button.classList.add('active');
             
             const target = button.getAttribute('data-target');
+            
+            // Clear red dot when clicking the Announcements tab
+            if (target === 'announcements') {
+                localStorage.setItem('csatpurdue_last_seen_announcement', LATEST_ANNOUNCEMENT_ID);
+                if (announcementBadge) {
+                    announcementBadge.style.display = 'none';
+                }
+            }
+
             pages.forEach(p => p.classList.remove('active-page'));
             
             const targetPage = document.getElementById(`${target}-page`);
@@ -672,7 +714,6 @@ if (isAdmin) {
             appHeader.classList.add('hidden-header');
         } else {
             appHeader.classList.remove('hidden-header');
-            // Keeps the top header bar space on every page, but sets the text to empty
             headerTitle.innerText = "";
         }
     }
@@ -748,7 +789,6 @@ if (isAdmin) {
         });
     }
 
-
     if (btnBackToHomeFromEating) {
         btnBackToHomeFromEating.addEventListener('click', () => {
             showPage(document.getElementById('home-page'));
@@ -819,7 +859,6 @@ function parseRawScriptureText() {
             continue;
         }
 
-        // Updated check: Matches "Chapter" OR single-chapter book headers
         if (line.includes("Chapter") || line.includes("Philemon") || line.includes("2 John") || line.includes("3 John") || line.includes("Jude")) {
             isCapturingSubject = false;
             if (line.includes("Chapter")) {
@@ -840,13 +879,11 @@ function parseRawScriptureText() {
             continue;
         }
 
-        // Matches both standard "Book 1:1 text" AND single-chapter "Book 1 text"
         const universalPattern = /^([1-4]?\s*[A-Za-z.]+)\s*(?:(\d+):)?(\d+)\s+(.*)/;
         const match = line.match(universalPattern);
 
         if (match) {
             isCapturingSubject = false;
-            // If there's no colon, default the chapter to 1
             const chapterNum = match[2] ? parseInt(match[2], 10) : 1; 
             const verseText = match[4].trim();
 
@@ -923,16 +960,14 @@ function verifyStreakValidityOnBoot() {
     }
 }
 
-function initializeMinistryDeck() {
-    // Eating God's Word deck initialization
-}
-
-
 document.addEventListener('ScriptureDataLoaded', () => {
     parseRawScriptureText();
     bootUpApplicationEngine();
 });
 
+/* =======================================================
+   🔴 LONG PRESS & HIGHLIGHT POPOVER CORE LOGIC
+======================================================= */
 let pressTimer = null;
 let selectedVerseEl = null;
 
@@ -941,41 +976,51 @@ function attachVerseLongPressListeners() {
 
     verseEls.forEach(el => {
         const startPress = (e) => {
+            clearTimeout(pressTimer);
             pressTimer = setTimeout(() => {
                 selectedVerseEl = el;
-                showHighlightPopover(el, e);
-            }, 500);
+                showHighlightPopover(el);
+            }, 400);
         };
 
-        const cancelPress = () => clearTimeout(pressTimer);
+        const cancelPress = () => {
+            clearTimeout(pressTimer);
+        };
 
         el.addEventListener('touchstart', startPress, { passive: true });
-        el.addEventListener('touchend', cancelPress);
-        el.addEventListener('touchmove', cancelPress);
+        el.addEventListener('touchend', cancelPress, { passive: true });
+        el.addEventListener('touchmove', cancelPress, { passive: true });
+        
         el.addEventListener('mousedown', startPress);
         el.addEventListener('mouseup', cancelPress);
         el.addEventListener('mouseleave', cancelPress);
     });
 }
 
-function showHighlightPopover(element, event) {
+function showHighlightPopover(element) {
     const popover = document.getElementById('highlight-popover');
     if (!popover) return;
 
     const rect = element.getBoundingClientRect();
-    popover.style.top = `${rect.top + window.scrollY}px`;
-    popover.style.left = `${rect.left + (rect.width / 2)}px`;
+    
     popover.style.display = 'flex';
+    popover.style.position = 'absolute';
+    popover.style.top = `${rect.top + window.scrollY - 54}px`;
+    popover.style.left = `${rect.left + (rect.width / 2)}px`;
+    popover.style.transform = 'translateX(-50%)';
 }
 
 document.addEventListener('click', (e) => {
     const popover = document.getElementById('highlight-popover');
     if (!popover) return;
-    
-    if (e.target.classList.contains('hl-color-btn')) {
-        const color = e.target.getAttribute('data-color');
+
+    const targetColorBtn = e.target.closest('.hl-color-btn');
+    const targetRemoveBtn = e.target.closest('#hl-remove-btn');
+
+    if (targetColorBtn) {
+        const color = targetColorBtn.getAttribute('data-color');
         applyVerseHighlight(color);
-    } else if (e.target.id === 'hl-remove-btn') {
+    } else if (targetRemoveBtn) {
         applyVerseHighlight(null);
     } else if (!popover.contains(e.target) && selectedVerseEl && !selectedVerseEl.contains(e.target)) {
         popover.style.display = 'none';
@@ -985,7 +1030,7 @@ document.addEventListener('click', (e) => {
 function applyVerseHighlight(color) {
     if (!selectedVerseEl) return;
     const verseId = selectedVerseEl.getAttribute('data-verse-id');
-    
+
     selectedVerseEl.classList.remove('hl-yellow', 'hl-blue', 'hl-pink');
 
     if (color) {
@@ -995,7 +1040,9 @@ function applyVerseHighlight(color) {
         delete userHighlightsMap[verseId];
     }
 
-    document.getElementById('highlight-popover').style.display = 'none';
+    const popover = document.getElementById('highlight-popover');
+    if (popover) popover.style.display = 'none';
+
     saveUserHighlights();
 }
 
