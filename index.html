@@ -158,9 +158,9 @@
                     </div>
 
                     <div class="announcement-card-box" style="text-align: center;">
-                        <h3 class="announcement-card-title">Upcoming Events</h3>
+                        <h3 class="announcement-card-title">Labor Day Mini-Conference</h3>
                         <p class="announcement-card-text">
-                            Labor Day Mini-Conference this weekend with the church in Indianapolis!<br><br>
+                            
                             Saturday from 10-3 at the Meeting Hall (here in Lafayette).<br>
                             Lord's Day from 10-1 at the Meeting Hall (here in Lafayette).<br><br>
                             Lunch provided both days.
@@ -172,6 +172,14 @@
                             Higher Ground Retreat Center<br>
                             <strong>October 16-18</strong>
                         </p>
+                    </div>
+
+                    <div class="announcement-card-box" style="text-align: center;">
+                        <h3 class="announcement-card-title">App Relate Announcements</h3>
+                        <p class="announcement-card-text">
+                            New Feature: Hold a verse to Highlight it.<br> 
+                            New Feature: Add notes and or prayers at the end of any day's reading.<br>  
+                            These are private and will only be visible to you.</p>
                     </div>
                     
                 </div>
@@ -361,12 +369,26 @@
                 </div>
 
                 <div class="bible-scroll-viewport" id="bible-text-scroll-box">
-                    <div id="bible-text-content-target">
-                        <p class="scripture-loading-placeholder">Loading Scripture text...</p>
-                    </div>
-                    <div id="scroll-completion-trigger"></div>
-                </div>
-            </div> 
+    <!-- 1. Scripture text loads here -->
+    <div id="bible-text-content-target">
+        <p class="scripture-loading-placeholder">Loading Scripture text...</p>
+    </div>
+
+    <!-- 2. Notes & Prayers moved outside the target so JS won't wipe it -->
+    <div class="notes-prayers-container">
+        <h3 class="notes-title">Notes & Prayers</h3>
+        <p class="notes-subtitle">Jot down any thoughts, reflections, or prayers from today's reading.</p>
+        <textarea 
+            id="daily-notes-input" 
+            placeholder="Type here..." 
+            rows="4"
+        ></textarea>
+        <div id="notes-save-status" class="save-status">Saved</div>
+    </div>
+
+    <div id="scroll-completion-trigger"></div>
+</div>
+</div>
 
             <div id="image-fullscreen-modal" class="image-modal-overlay" style="display: none;">
                 <button id="close-image-modal" class="modal-close-x">✕</button>

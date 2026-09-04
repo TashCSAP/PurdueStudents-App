@@ -22,7 +22,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_2_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_3_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -265,6 +265,31 @@ function bootUpApplicationEngine() {
                     userDisplayName.innerText = data.displayName || "Student";
                     userReadingMap = data.readingMap || {};
                     userHighlightsMap = data.highlights || {};
+
+                    let streak = data.currentStreak || 0;
+                    const lastRead = data.lastReadDate || null;
+                    const todayStr = getTrueLocalDateString();
+
+                    // Check if user broke their streak
+                    if (lastRead && streak > 0) {
+                        const lastDate = new Date(lastRead);
+                        const currentDate = new Date(todayStr);
+                        const diffTime = Math.abs(currentDate - lastDate);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                        if (diffDays > 1) {
+                            streak = 0;
+                            db.collection('users').doc(user.uid).update({
+                                currentStreak: 0
+                            });
+                        }
+                    }
+
+                    // Attach properties directly to currentUser object
+                    currentUser.displayName = data.displayName || "Student";
+                    currentUser.readingMap = userReadingMap;
+                    currentUser.currentStreak = streak;
+                    currentUser.lastReadDate = lastRead;
                 }
                 calculateStats();
                 initializeChallengeDashboard();
@@ -477,23 +502,34 @@ function bootUpApplicationEngine() {
 
     function calculateStats() {
         const completedMap = currentUser ? userReadingMap : (JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || {});
-        let completedCount = 0;
-        const totalAssignments = readingChallengeData.length;
         
+        let totalChapters = 0;
+        let completedChaptersCount = 0;
+
         readingChallengeData.forEach(day => {
-            if (completedMap[day.id]) completedCount++;
+            const dayChapterCount = day.chapters.length;
+            totalChapters += dayChapterCount;
+            if (completedMap[day.id]) {
+                completedChaptersCount += dayChapterCount;
+            }
         });
 
-        const progressPercent = Math.round((completedCount / totalAssignments) * 100) || 0;
+        const progressPercent = Math.round((completedChaptersCount / totalChapters) * 100) || 0;
         
         if (progressBarFill) progressBarFill.style.width = `${progressPercent}%`;
         if (progressPercentText) progressPercentText.innerText = `${progressPercent}%`;
-        if (progressCountString) progressCountString.innerText = `${completedCount} of ${totalAssignments} readings completed`;
+        if (progressCountString) progressCountString.innerText = `${completedChaptersCount} of ${totalChapters} chapters read`;
 
         const profileChapters = document.getElementById('profile-chapters-count');
-        if (profileChapters) profileChapters.innerText = `${completedCount} / ${totalAssignments}`;
+        if (profileChapters) profileChapters.innerText = `${completedChaptersCount} / ${totalChapters}`;
 
-        let currentStreak = parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0;
+        let currentStreak = 0;
+        if (currentUser) {
+            currentStreak = currentUser.currentStreak || 0;
+        } else {
+            currentStreak = parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0;
+        }
+
         if (streakDisplayText) streakDisplayText.innerText = `${currentStreak} Day Streak`;
         
         const profileStreak = document.getElementById('profile-streak-count');
@@ -608,13 +644,17 @@ function bootUpApplicationEngine() {
 
             htmlOutput += `
                 <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 40px; padding-bottom: 40px; border-top: 1px dashed #e5e7eb; pt: 20px;">
-                    • You have reached the end of today's text. •
+                    • You have reached the end of today's text. Scroll all the way down to mark completed. •
                 </p>
             `;
 
             bibleTextContentTarget.innerHTML = htmlOutput;
             attachVerseLongPressListeners();
         }
+
+        // Load saved notes for this specific day
+        loadDayNotes(dayItem.id);
+
         showPage(scriptureReaderPage);
         updateHeader('reader_mode');
         
@@ -647,19 +687,21 @@ function bootUpApplicationEngine() {
         autoScrollObserver.observe(triggerElement);
     }
 
-    function markDayAsComplete(dayId) {
+   function markDayAsComplete(dayId) {
         if (currentUser) {
-            userReadingMap[dayId] = true;
-            calculateCalendarStreakOnMark();
-            const currentStreak = parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0;
+            if (!userReadingMap[dayId]) {
+                userReadingMap[dayId] = true;
+                const updatedStreak = calculateCalendarStreakOnMark();
 
-            db.collection('users').doc(currentUser.uid).update({
-                readingMap: userReadingMap,
-                currentStreak: currentStreak,
-                lastReadDate: getTrueLocalDateString()
-            }).then(() => {
-                initializeChallengeDashboard();
-            });
+                db.collection('users').doc(currentUser.uid).update({
+                    readingMap: userReadingMap,
+                    currentStreak: updatedStreak,
+                    lastReadDate: getTrueLocalDateString()
+                }).then(() => {
+                    currentUser.currentStreak = updatedStreak;
+                    initializeChallengeDashboard();
+                });
+            }
         } else {
             const completedMap = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || {};
             if (!completedMap[dayId]) {
@@ -825,6 +867,16 @@ function bootUpApplicationEngine() {
         });
     }
 
+    // Setup notes auto-save on typing
+    const notesInput = document.getElementById('daily-notes-input');
+    if (notesInput) {
+        let debounceTimer;
+        notesInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(saveDayNotes, 800);
+        });
+    }
+
     updateHeader('home');
     verifyStreakValidityOnBoot();
 }
@@ -921,13 +973,13 @@ function getTrueLocalDateString() {
 
 function calculateCalendarStreakOnMark() {
     const todayStr = getTrueLocalDateString();
-    const lastRead = localStorage.getItem('csatpurdue_last_read_date');
-    let streak = parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0;
+    let lastRead = currentUser ? currentUser.lastReadDate : localStorage.getItem('csatpurdue_last_read_date');
+    let streak = currentUser ? (currentUser.currentStreak || 0) : (parseInt(localStorage.getItem('csatpurdue_streak_count')) || 0);
 
     if (!lastRead) {
         streak = 1;
     } else if (lastRead === todayStr) {
-        return;
+        return streak;
     } else {
         const lastDate = new Date(lastRead);
         const currentDate = new Date(todayStr);
@@ -941,8 +993,11 @@ function calculateCalendarStreakOnMark() {
         }
     }
 
-    localStorage.setItem('csatpurdue_streak_count', streak);
-    localStorage.setItem('csatpurdue_last_read_date', todayStr);
+    if (!currentUser) {
+        localStorage.setItem('csatpurdue_streak_count', streak);
+        localStorage.setItem('csatpurdue_last_read_date', todayStr);
+    }
+    return streak;
 }
 
 function verifyStreakValidityOnBoot() {
@@ -1054,4 +1109,79 @@ function saveUserHighlights() {
     } else {
         localStorage.setItem(HIGHLIGHTS_STORAGE_KEY, JSON.stringify(userHighlightsMap));
     }
+}
+
+// Check and reset broken streak when user re-opens or switches back to the app tab
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && currentUser) {
+        const todayStr = getTrueLocalDateString();
+        const lastRead = currentUser.lastReadDate;
+        
+        if (lastRead && currentUser.currentStreak > 0) {
+            const lastDate = new Date(lastRead);
+            const currentDate = new Date(todayStr);
+            const diffTime = Math.abs(currentDate - lastDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 1) {
+                currentUser.currentStreak = 0;
+                db.collection('users').doc(currentUser.uid).update({
+                    currentStreak: 0
+                });
+                calculateStats();
+            }
+        }
+    }
+});
+
+/* =======================================================
+   📝 DAILY NOTES & PRAYERS AUTO-SAVE LOGIC
+======================================================= */
+function loadDayNotes(dayId) {
+    const notesInput = document.getElementById('daily-notes-input');
+    if (!notesInput) return;
+
+    notesInput.dataset.activeDayId = dayId;
+
+    if (currentUser) {
+        const userNotes = currentUser.notes || {};
+        notesInput.value = userNotes[dayId] || '';
+    } else {
+        const localNotes = JSON.parse(localStorage.getItem('csatpurdue_user_notes')) || {};
+        notesInput.value = localNotes[dayId] || '';
+    }
+}
+
+function saveDayNotes() {
+    const notesInput = document.getElementById('daily-notes-input');
+    const saveStatus = document.getElementById('notes-save-status');
+    if (!notesInput) return;
+
+    const dayId = notesInput.dataset.activeDayId;
+    if (!dayId) return;
+
+    const noteText = notesInput.value;
+
+    if (currentUser) {
+        const userNotes = currentUser.notes || {};
+        userNotes[dayId] = noteText;
+        currentUser.notes = userNotes;
+
+        db.collection('users').doc(currentUser.uid).update({
+            notes: userNotes
+        }).then(() => showSaveIndicator(saveStatus));
+    } else {
+        const localNotes = JSON.parse(localStorage.getItem('csatpurdue_user_notes')) || {};
+        localNotes[dayId] = noteText;
+        localStorage.setItem('csatpurdue_user_notes', JSON.stringify(localNotes));
+        showSaveIndicator(saveStatus);
+    }
+}
+
+function showSaveIndicator(element) {
+    if (!element) return;
+    element.classList.add('visible');
+    setTimeout(() => {
+        element.classList.remove('visible');
+    }, 2000);
 }
