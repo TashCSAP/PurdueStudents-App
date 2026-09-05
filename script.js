@@ -22,7 +22,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_3_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_4_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -469,36 +469,76 @@ function bootUpApplicationEngine() {
         });
     }
 
-    function initializeChallengeDashboard() {
-        if (!daysListContainer) return;
-        daysListContainer.innerHTML = '';
+   function scrollListToTargetDay(container) {
+    if (!container) return;
 
-        const completedMap = currentUser ? userReadingMap : (JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || {});
+    // setTimeout ensures page visibility & CSS rendering finish before measuring coordinates
+    setTimeout(() => {
+        requestAnimationFrame(() => {
+            const allRows = Array.from(container.querySelectorAll('.day-row-item'));
+            if (allRows.length === 0) return;
 
-        readingChallengeData.forEach(day => {
-            const isDone = !!completedMap[day.id];
-            
-            const row = document.createElement('div');
-            row.className = `day-row-item ${isDone ? 'is-completed' : ''}`;
-            row.dataset.id = day.id;
+            const unreadIndex = allRows.findIndex(row => !row.classList.contains('is-completed'));
 
-            row.innerHTML = `
-                <div class="day-left-meta">
-                    <span class="day-title-string">${day.dateLabel}</span>
-                    <span class="day-assignment-string">${day.assignment}</span>
-                </div>
-                <div class="completion-check-circle"></div>
-            `;
+            let targetIndex = 0;
+            if (unreadIndex !== -1) {
+                targetIndex = Math.max(0, unreadIndex - 3);
+            } else {
+                targetIndex = allRows.length - 1;
+            }
 
-            row.addEventListener('click', () => {
-                openScriptureReader(day);
-            });
+            const targetRow = allRows[targetIndex];
+            if (targetRow) {
+                const containerRect = container.getBoundingClientRect();
+                const rowRect = targetRow.getBoundingClientRect();
+                const currentScroll = container.scrollTop;
+                
+                // Calculates precise distance regardless of nested parent containers
+                const targetScroll = currentScroll + (rowRect.top - containerRect.top);
 
-            daysListContainer.appendChild(row);
+                container.scrollTo({
+                    top: targetScroll,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    }, 150);
+}
+
+// 2. REPLACED initializeChallengeDashboard
+function initializeChallengeDashboard() {
+    if (!daysListContainer) return;
+    daysListContainer.innerHTML = '';
+
+    const completedMap = currentUser ? userReadingMap : (JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || {});
+
+    readingChallengeData.forEach(day => {
+        const isDone = !!completedMap[day.id];
+        
+        const row = document.createElement('div');
+        row.className = `day-row-item ${isDone ? 'is-completed' : ''}`;
+        row.dataset.id = day.id;
+
+        row.innerHTML = `
+            <div class="day-left-meta">
+                <span class="day-title-string">${day.dateLabel}</span>
+                <span class="day-assignment-string">${day.assignment}</span>
+            </div>
+            <div class="completion-check-circle"></div>
+        `;
+
+        row.addEventListener('click', () => {
+            openScriptureReader(day);
         });
 
-        calculateStats();
-    }
+        daysListContainer.appendChild(row);
+    });
+
+    calculateStats();
+
+    // Trigger auto-scroll immediately using frame rendering
+    scrollListToTargetDay(daysListContainer);
+}
 
     function calculateStats() {
         const completedMap = currentUser ? userReadingMap : (JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || {});
@@ -648,8 +688,14 @@ function bootUpApplicationEngine() {
                 </p>
             `;
 
-            bibleTextContentTarget.innerHTML = htmlOutput;
+       bibleTextContentTarget.innerHTML = htmlOutput;
             attachVerseLongPressListeners();
+        }
+
+        // Attach active day ID so saveDayNotes() knows which day to save to
+        const notesInput = document.getElementById('daily-notes-input');
+        if (notesInput) {
+            notesInput.dataset.activeDayId = dayItem.id;
         }
 
         // Load saved notes for this specific day
@@ -766,53 +812,56 @@ function bootUpApplicationEngine() {
         if (pageElement) pageElement.classList.add('active-page');
     }
 
-    function renderOTSchedule() {
-        const otContainer = document.getElementById('ot-days-list');
-        if (!otContainer) return;
+   function renderOTSchedule() {
+    const otContainer = document.getElementById('ot-days-list');
+    if (!otContainer) return;
+    
+    otContainer.innerHTML = '';
+    const completedOTMap = JSON.parse(localStorage.getItem('csatpurdue_ot_progress')) || {};
+    let completedCount = 0;
+
+    OT_SCHEDULE.forEach(item => {
+        const isDone = !!completedOTMap[item.id];
+        if (isDone) completedCount++;
+
+        const row = document.createElement('div');
+        row.className = `day-row-item ${isDone ? 'is-completed' : ''}`;
         
-        otContainer.innerHTML = '';
-        const completedOTMap = JSON.parse(localStorage.getItem('csatpurdue_ot_progress')) || {};
-        let completedCount = 0;
+        row.innerHTML = `
+            <div class="day-left-meta">
+                <span class="day-title-string">${item.dateLabel}</span>
+                <span class="day-assignment-string">${item.assignment}</span>
+            </div>
+            <div class="completion-check-circle"></div>
+        `;
 
-        OT_SCHEDULE.forEach(item => {
-            const isDone = !!completedOTMap[item.id];
-            if (isDone) completedCount++;
-
-            const row = document.createElement('div');
-            row.className = `day-row-item ${isDone ? 'is-completed' : ''}`;
-            
-            row.innerHTML = `
-                <div class="day-left-meta">
-                    <span class="day-title-string">${item.dateLabel}</span>
-                    <span class="day-assignment-string">${item.assignment}</span>
-                </div>
-                <div class="completion-check-circle"></div>
-            `;
-
-            row.addEventListener('click', () => {
-                completedOTMap[item.id] = !completedOTMap[item.id];
-                localStorage.setItem('csatpurdue_ot_progress', JSON.stringify(completedOTMap));
-                renderOTSchedule();
-            });
-
-            otContainer.appendChild(row);
+        row.addEventListener('click', () => {
+            completedOTMap[item.id] = !completedOTMap[item.id];
+            localStorage.setItem('csatpurdue_ot_progress', JSON.stringify(completedOTMap));
+            renderOTSchedule();
         });
 
-        const percent = Math.round((completedCount / OT_SCHEDULE.length) * 100) || 0;
-        const fillBar = document.getElementById('ot-progress-bar-fill');
-        const percentText = document.getElementById('ot-progress-percent');
-        const countString = document.getElementById('ot-progress-count-string');
+        otContainer.appendChild(row);
+    });
 
-        if (fillBar) fillBar.style.width = `${percent}%`;
-        if (percentText) percentText.innerText = `${percent}%`;
-        if (countString) countString.innerText = `${completedCount} of ${OT_SCHEDULE.length} completed`;
-    }
+    const percent = Math.round((completedCount / OT_SCHEDULE.length) * 100) || 0;
+    const fillBar = document.getElementById('ot-progress-bar-fill');
+    const percentText = document.getElementById('ot-progress-percent');
+    const countString = document.getElementById('ot-progress-count-string');
 
+    if (fillBar) fillBar.style.width = `${percent}%`;
+    if (percentText) percentText.innerText = `${percent}%`;
+    if (countString) countString.innerText = `${completedCount} of ${OT_SCHEDULE.length} completed`;
+
+    // AUTO-SCROLL ADDED HERE:
+    scrollListToTargetDay(otContainer);
+}
     if (btnSummerSupply) {
         btnSummerSupply.addEventListener('click', () => {
             initializeChallengeDashboard();
             showPage(summerSupplyPage);
             updateHeader('summer_supply');
+            scrollListToTargetDay(daysListContainer);
         });
     }
 
@@ -821,8 +870,9 @@ function bootUpApplicationEngine() {
             renderOTSchedule();
             showPage(otSchedulePage);
             updateHeader('ot_schedule');
+            scrollListToTargetDay(document.getElementById('ot-days-list'));
         });
-    } 
+    }
 
     if (btnBackToHomeFromOT) {
         btnBackToHomeFromOT.addEventListener('click', () => {

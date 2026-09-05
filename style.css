@@ -1384,3 +1384,9 @@ body {
     opacity: 1;
 }
 
+#reading-days-list,
+#ot-days-list {
+    max-height: 70vh;    /* Gives the container a height boundary */
+    overflow-y: auto;   /* Enables the scrollbar so JavaScript can scroll it */
+    position: relative; /* Ensures row top calculations remain accurate */
+}
