@@ -22,7 +22,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_4_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_1_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -692,10 +692,20 @@ function initializeChallengeDashboard() {
             attachVerseLongPressListeners();
         }
 
-        // Attach active day ID so saveDayNotes() knows which day to save to
+        // Re-bind notes input and auto-save listener every time reader opens
         const notesInput = document.getElementById('daily-notes-input');
         if (notesInput) {
             notesInput.dataset.activeDayId = dayItem.id;
+
+            // Remove old listeners by cloning, then attach fresh auto-save listener
+            const newNotesInput = notesInput.cloneNode(true);
+            notesInput.parentNode.replaceChild(newNotesInput, notesInput);
+
+            let debounceTimer;
+            newNotesInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(saveDayNotes, 300);
+            });
         }
 
         // Load saved notes for this specific day
