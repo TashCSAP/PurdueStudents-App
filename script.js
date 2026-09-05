@@ -1,3 +1,10 @@
+// Prevents iOS/Android from opening a frozen, non-clickable cached snapshot
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
 // Initialize Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyAH_OK8FFn-sqBgiD0jEaEcFk0DHJbSY2Y",
@@ -688,24 +695,14 @@ function initializeChallengeDashboard() {
                 </p>
             `;
 
-       bibleTextContentTarget.innerHTML = htmlOutput;
+            bibleTextContentTarget.innerHTML = htmlOutput;
             attachVerseLongPressListeners();
         }
 
-        // Re-bind notes input and auto-save listener every time reader opens
+        // Safely tag active day ID for notes without breaking DOM event listeners
         const notesInput = document.getElementById('daily-notes-input');
         if (notesInput) {
             notesInput.dataset.activeDayId = dayItem.id;
-
-            // Remove old listeners by cloning, then attach fresh auto-save listener
-            const newNotesInput = notesInput.cloneNode(true);
-            notesInput.parentNode.replaceChild(newNotesInput, notesInput);
-
-            let debounceTimer;
-            newNotesInput.addEventListener('input', () => {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(saveDayNotes, 300);
-            });
         }
 
         // Load saved notes for this specific day
@@ -927,15 +924,31 @@ function initializeChallengeDashboard() {
         });
     }
 
-    // Setup notes auto-save on typing
-    const notesInput = document.getElementById('daily-notes-input');
-    if (notesInput) {
-        let debounceTimer;
-        notesInput.addEventListener('input', () => {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(saveDayNotes, 800);
-        });
+   // Global notes auto-save listeners
+const notesInput = document.getElementById('daily-notes-input');
+
+if (notesInput) {
+    let debounceTimer;
+
+    // Save while typing (300ms delay)
+    notesInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(saveDayNotes, 300);
+    });
+
+    // Save instantly as soon as typing stops / keyboard drops
+    notesInput.addEventListener('blur', () => {
+        clearTimeout(debounceTimer);
+        saveDayNotes();
+    });
+}
+
+// Save instantly when swiping app away or sending it to background
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+        saveDayNotes();
     }
+});
 
     updateHeader('home');
     verifyStreakValidityOnBoot();
