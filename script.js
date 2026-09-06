@@ -29,7 +29,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_1_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_6_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -272,6 +272,7 @@ function bootUpApplicationEngine() {
                     userDisplayName.innerText = data.displayName || "Student";
                     userReadingMap = data.readingMap || {};
                     userHighlightsMap = data.highlights || {};
+                    currentUser.notes = data.notes || {};
 
                     let streak = data.currentStreak || 0;
                     const lastRead = data.lastReadDate || null;
@@ -1208,7 +1209,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 /* =======================================================
-   📝 DAILY NOTES & PRAYERS AUTO-SAVE LOGIC
+   📝 DAILY NOTES & PRAYERS AUTO-SAVE LOGIC (FIXED)
 ======================================================= */
 function loadDayNotes(dayId) {
     const notesInput = document.getElementById('daily-notes-input');
@@ -1217,8 +1218,11 @@ function loadDayNotes(dayId) {
     notesInput.dataset.activeDayId = dayId;
 
     if (currentUser) {
-        const userNotes = currentUser.notes || {};
-        notesInput.value = userNotes[dayId] || '';
+        // Ensure notes object is initialized on currentUser
+        if (!currentUser.notes) {
+            currentUser.notes = {};
+        }
+        notesInput.value = currentUser.notes[dayId] || '';
     } else {
         const localNotes = JSON.parse(localStorage.getItem('csatpurdue_user_notes')) || {};
         notesInput.value = localNotes[dayId] || '';
@@ -1236,13 +1240,20 @@ function saveDayNotes() {
     const noteText = notesInput.value;
 
     if (currentUser) {
-        const userNotes = currentUser.notes || {};
-        userNotes[dayId] = noteText;
-        currentUser.notes = userNotes;
+        // Guarantee user notes object structure before writing
+        if (!currentUser.notes) {
+            currentUser.notes = {};
+        }
+        
+        currentUser.notes[dayId] = noteText;
 
-        db.collection('users').doc(currentUser.uid).update({
-            notes: userNotes
-        }).then(() => showSaveIndicator(saveStatus));
+        db.collection('users').doc(currentUser.uid).set({
+            notes: {
+                [dayId]: noteText
+            }
+        }, { merge: true })
+        .then(() => showSaveIndicator(saveStatus))
+        .catch(err => console.error("Firestore save error:", err));
     } else {
         const localNotes = JSON.parse(localStorage.getItem('csatpurdue_user_notes')) || {};
         localNotes[dayId] = noteText;
