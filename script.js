@@ -33,7 +33,9 @@ const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_13_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
-    "mvmcgrady@gmail.com"
+    "mvmcgrady@gmail.com",
+    "abc93605@gmail.com"
+
 ];
 
 function bootUpApplicationEngine() {
