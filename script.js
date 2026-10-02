@@ -29,7 +29,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_sep_29_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_oct_2_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -987,20 +987,20 @@ function parseRawScriptureText() {
             continue;
         }
 
-        if (line.includes("Chapter") || line.includes("Philemon") || line.includes("2 John") || line.includes("3 John") || line.includes("Jude")) {
-            isCapturingSubject = false;
-            if (line.includes("Chapter")) {
-                const parts = line.split("Chapter");
-                currentBookName = parts[0].trim();
-            } else if (line.includes("Philemon")) currentBookName = "Philemon";
-            else if (line.includes("2 John")) currentBookName = "2 John";
-            else if (line.includes("3 John")) currentBookName = "3 John";
-            else if (line.includes("Jude")) currentBookName = "Jude";
+      if (line.includes("Chapter") || /\bPhilemon\b/i.test(line) || /\b2 John\b/i.test(line) || /\b3 John\b/i.test(line) || /\bJude\b/i.test(line)) {
+    isCapturingSubject = false;
+    if (line.includes("Chapter")) {
+        const parts = line.split("Chapter");
+        currentBookName = parts[0].trim();
+    } else if (/\bPhilemon\b/i.test(line)) currentBookName = "Philemon";
+    else if (/\b2 John\b/i.test(line)) currentBookName = "2 John";
+    else if (/\b3 John\b/i.test(line)) currentBookName = "3 John";
+    else if (/\bJude\b/i.test(line)) currentBookName = "Jude";
 
-            if (lastSeenTitle && currentBookName) dynamicBookTitles[currentBookName] = lastSeenTitle;
-            if (subjectBuffer.length > 0 && currentBookName) dynamicBookSubjects[currentBookName] = subjectBuffer.join(" ");
-            if (line.includes("Chapter")) continue;
-        }
+    if (lastSeenTitle && currentBookName) dynamicBookTitles[currentBookName] = lastSeenTitle;
+    if (subjectBuffer.length > 0 && currentBookName) dynamicBookSubjects[currentBookName] = subjectBuffer.join(" ");
+    if (line.includes("Chapter")) continue;
+}
 
         if (isCapturingSubject && !line.match(/^([1-4]?\s*[A-Za-z.]+)\s*\d+/)) {
             subjectBuffer.push(line);
