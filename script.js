@@ -29,7 +29,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_oct_2_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_oct_5_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
