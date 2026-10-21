@@ -29,7 +29,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_oct_5_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_oct_21_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -476,18 +476,20 @@ function bootUpApplicationEngine() {
                 const bookTracker = {};
                 let totalDaysCompleted = 0;
 
-                readingChallengeData.forEach(day => {
+                READING_SCHEDULE.forEach((day, index) => {
+                    const dayId = `gospel_${index}`;
+
                     day.chapters.forEach(ch => {
                         if (!bookTracker[ch.book]) {
                             bookTracker[ch.book] = { total: 0, completed: 0 };
                         }
                         bookTracker[ch.book].total += 1;
-                        if (map[day.id]) {
+                        if (map[dayId]) {
                             bookTracker[ch.book].completed += 1;
                         }
                     });
 
-                    if (map[day.id]) {
+                    if (map[dayId]) {
                         totalDaysCompleted += 1;
                     }
                 });
@@ -672,21 +674,24 @@ function initializeChallengeDashboard() {
         checkAndRenderEarnedBadges(completedMap);
     }
 
-    function checkAndRenderEarnedBadges(completedMap) {
+   function checkAndRenderEarnedBadges(completedMap) {
         const badgeRowContainer = document.getElementById('badges-container-row');
         if (!badgeRowContainer) return;
         badgeRowContainer.innerHTML = ''; 
 
         const bookCompletionTracker = {};
+        const rawActiveSchedule = isViewingArchiveMode ? ARCHIVED_TITUS_SCHEDULE : READING_SCHEDULE;
 
-        readingChallengeData.forEach(day => {
+        rawActiveSchedule.forEach((day, index) => {
+            const dayId = isViewingArchiveMode ? index : `gospel_${index}`;
+
             day.chapters.forEach(ch => {
                 if (!bookCompletionTracker[ch.book]) {
                     bookCompletionTracker[ch.book] = { totalChapters: 0, completedChapters: 0 };
                 }
 
                 bookCompletionTracker[ch.book].totalChapters += 1;
-                if (completedMap[day.id]) {
+                if (completedMap[dayId]) {
                     bookCompletionTracker[ch.book].completedChapters += 1;
                 }
             });
@@ -695,7 +700,7 @@ function initializeChallengeDashboard() {
         Object.keys(bookCompletionTracker).forEach(bookName => {
             const record = bookCompletionTracker[bookName];
             
-            if (record.completedChapters === record.totalChapters && record.totalChapters > 0) {
+            if (record.completedChapters > 0 && record.completedChapters === record.totalChapters) {
                 const badgeFileName = `Badge-${bookName}.png`;
                 const badgeEl = document.createElement('div');
                 badgeEl.className = 'earned-badge-node';
