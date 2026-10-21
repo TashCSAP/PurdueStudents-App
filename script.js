@@ -87,8 +87,9 @@ function bootUpApplicationEngine() {
 
     let currentActiveIndexReading = null;
     let autoScrollObserver = null;
+    let isViewingArchiveMode = false;
 
-    const READING_SCHEDULE = [
+    const ARCHIVED_TITUS_SCHEDULE = [
         { dateLabel: "Sept 2", assignment: "Titus 1-3", chapters: [{ book: "Titus", chapter: 1 }, { book: "Titus", chapter: 2 }, { book: "Titus", chapter: 3 }] },
         { dateLabel: "Sept 3", assignment: "Philemon", chapters: [{ book: "Philemon", chapter: 1 }] },
         { dateLabel: "Sept 4", assignment: "Hebrews 1-2", chapters: [{ book: "Hebrews", chapter: 1 }, { book: "Hebrews", chapter: 2 }] },
@@ -127,6 +128,66 @@ function bootUpApplicationEngine() {
         { dateLabel: "Oct 13", assignment: "Revelation 18-20", chapters: [{ book: "Revelation", chapter: 18 }, { book: "Revelation", chapter: 19 }, { book: "Revelation", chapter: 20 }] },
         { dateLabel: "Oct 14", assignment: "Revelation 21", chapters: [{ book: "Revelation", chapter: 21 }] },
         { dateLabel: "Oct 15", assignment: "Revelation 22", chapters: [{ book: "Revelation", chapter: 22 }] }
+    ];
+
+    // 2. NEW ACTIVE SCHEDULE (Matthew through Luke)
+    const READING_SCHEDULE = [
+        { dateLabel: "Oct 21", assignment: "Matthew 1-2", chapters: [{ book: "Matthew", chapter: 1 }, { book: "Matthew", chapter: 2 }] },
+        { dateLabel: "Oct 22", assignment: "Matthew 3", chapters: [{ book: "Matthew", chapter: 3 }] },
+        { dateLabel: "Oct 23", assignment: "Matthew 4", chapters: [{ book: "Matthew", chapter: 4 }] },
+        { dateLabel: "Oct 24", assignment: "Matthew 5", chapters: [{ book: "Matthew", chapter: 5 }] },
+        { dateLabel: "Oct 26", assignment: "Matthew 6-7", chapters: [{ book: "Matthew", chapter: 6 }, { book: "Matthew", chapter: 7 }] },
+        { dateLabel: "Oct 27", assignment: "Matthew 8-9", chapters: [{ book: "Matthew", chapter: 8 }, { book: "Matthew", chapter: 9 }] },
+        { dateLabel: "Oct 28", assignment: "Matthew 10-11", chapters: [{ book: "Matthew", chapter: 10 }, { book: "Matthew", chapter: 11 }] },
+        { dateLabel: "Oct 29", assignment: "Matthew 12", chapters: [{ book: "Matthew", chapter: 12 }] },
+        { dateLabel: "Oct 30", assignment: "Matthew 13", chapters: [{ book: "Matthew", chapter: 13 }] },
+        { dateLabel: "Oct 31", assignment: "Matthew 14-15", chapters: [{ book: "Matthew", chapter: 14 }, { book: "Matthew", chapter: 15 }] },
+        { dateLabel: "Nov 2", assignment: "Matthew 16-17", chapters: [{ book: "Matthew", chapter: 16 }, { book: "Matthew", chapter: 17 }] },
+        { dateLabel: "Nov 3", assignment: "Matthew 18-19", chapters: [{ book: "Matthew", chapter: 18 }, { book: "Matthew", chapter: 19 }] },
+        { dateLabel: "Nov 4", assignment: "Matthew 20", chapters: [{ book: "Matthew", chapter: 20 }] },
+        { dateLabel: "Nov 5", assignment: "Matthew 21", chapters: [{ book: "Matthew", chapter: 21 }] },
+        { dateLabel: "Nov 6", assignment: "Matthew 22", chapters: [{ book: "Matthew", chapter: 22 }] },
+        { dateLabel: "Nov 7", assignment: "Matthew 23", chapters: [{ book: "Matthew", chapter: 23 }] },
+        { dateLabel: "Nov 9", assignment: "Matthew 24", chapters: [{ book: "Matthew", chapter: 24 }] },
+        { dateLabel: "Nov 10", assignment: "Matthew 25", chapters: [{ book: "Matthew", chapter: 25 }] },
+        { dateLabel: "Nov 11", assignment: "Matthew 26", chapters: [{ book: "Matthew", chapter: 26 }] },
+        { dateLabel: "Nov 12", assignment: "Matthew 27-28", chapters: [{ book: "Matthew", chapter: 27 }, { book: "Matthew", chapter: 28 }] },
+        { dateLabel: "Nov 13", assignment: "Mark 1", chapters: [{ book: "Mark", chapter: 1 }] },
+        { dateLabel: "Nov 14", assignment: "Mark 2-3", chapters: [{ book: "Mark", chapter: 2 }, { book: "Mark", chapter: 3 }] },
+        { dateLabel: "Nov 16", assignment: "Mark 4", chapters: [{ book: "Mark", chapter: 4 }] },
+        { dateLabel: "Nov 17", assignment: "Mark 5", chapters: [{ book: "Mark", chapter: 5 }] },
+        { dateLabel: "Nov 18", assignment: "Mark 6", chapters: [{ book: "Mark", chapter: 6 }] },
+        { dateLabel: "Nov 19", assignment: "Mark 7-8", chapters: [{ book: "Mark", chapter: 7 }, { book: "Mark", chapter: 8 }] },
+        { dateLabel: "Nov 20", assignment: "Mark 9", chapters: [{ book: "Mark", chapter: 9 }] },
+        { dateLabel: "Nov 21", assignment: "Mark 10", chapters: [{ book: "Mark", chapter: 10 }] },
+        { dateLabel: "Nov 23", assignment: "Mark 11", chapters: [{ book: "Mark", chapter: 11 }] },
+        { dateLabel: "Nov 24", assignment: "Mark 12", chapters: [{ book: "Mark", chapter: 12 }] },
+        { dateLabel: "Nov 25", assignment: "Mark 13", chapters: [{ book: "Mark", chapter: 13 }] },
+        { dateLabel: "Nov 26", assignment: "Mark 14", chapters: [{ book: "Mark", chapter: 14 }] },
+        { dateLabel: "Nov 27", assignment: "Mark 15-16", chapters: [{ book: "Mark", chapter: 15 }, { book: "Mark", chapter: 16 }] },
+        { dateLabel: "Nov 28", assignment: "Fall Break (No Reading)", chapters: [] },
+        { dateLabel: "Nov 30", assignment: "Luke 1", chapters: [{ book: "Luke", chapter: 1 }] },
+        { dateLabel: "Dec 1", assignment: "Luke 2", chapters: [{ book: "Luke", chapter: 2 }] },
+        { dateLabel: "Dec 2", assignment: "Luke 3", chapters: [{ book: "Luke", chapter: 3 }] },
+        { dateLabel: "Dec 3", assignment: "Luke 4", chapters: [{ book: "Luke", chapter: 4 }] },
+        { dateLabel: "Dec 4", assignment: "Luke 5", chapters: [{ book: "Luke", chapter: 5 }] },
+        { dateLabel: "Dec 5", assignment: "Luke 6", chapters: [{ book: "Luke", chapter: 6 }] },
+        { dateLabel: "Dec 7", assignment: "Luke 7", chapters: [{ book: "Luke", chapter: 7 }] },
+        { dateLabel: "Dec 8", assignment: "Luke 8", chapters: [{ book: "Luke", chapter: 8 }] },
+        { dateLabel: "Dec 9", assignment: "Luke 9", chapters: [{ book: "Luke", chapter: 9 }] },
+        { dateLabel: "Dec 10", assignment: "Luke 10", chapters: [{ book: "Luke", chapter: 10 }] },
+        { dateLabel: "Dec 11", assignment: "Luke 11", chapters: [{ book: "Luke", chapter: 11 }] },
+        { dateLabel: "Dec 12", assignment: "Luke 13-14", chapters: [{ book: "Luke", chapter: 13 }, { book: "Luke", chapter: 14 }] },
+        { dateLabel: "Dec 14", assignment: "Luke 15", chapters: [{ book: "Luke", chapter: 15 }] },
+        { dateLabel: "Dec 15", assignment: "Luke 16", chapters: [{ book: "Luke", chapter: 16 }] },
+        { dateLabel: "Dec 16", assignment: "Luke 17", chapters: [{ book: "Luke", chapter: 17 }] },
+        { dateLabel: "Dec 17", assignment: "Luke 18", chapters: [{ book: "Luke", chapter: 18 }] },
+        { dateLabel: "Dec 18", assignment: "Luke 19", chapters: [{ book: "Luke", chapter: 19 }] },
+        { dateLabel: "Dec 19", assignment: "Luke 20", chapters: [{ book: "Luke", chapter: 20 }] },
+        { dateLabel: "Dec 21", assignment: "Luke 21", chapters: [{ book: "Luke", chapter: 21 }] },
+        { dateLabel: "Dec 22", assignment: "Luke 22", chapters: [{ book: "Luke", chapter: 22 }] },
+        { dateLabel: "Dec 23", assignment: "Luke 23", chapters: [{ book: "Luke", chapter: 23 }] },
+        { dateLabel: "Dec 24", assignment: "Luke 24", chapters: [{ book: "Luke", chapter: 24 }] }
     ];
 
     const OT_SCHEDULE = [
@@ -515,14 +576,36 @@ function bootUpApplicationEngine() {
     }, 150);
 }
 
-// 2. REPLACED initializeChallengeDashboard
 function initializeChallengeDashboard() {
     if (!daysListContainer) return;
     daysListContainer.innerHTML = '';
 
+    const titleEl = document.querySelector('#summer-supply-page .challenge-title');
+    const subtitleEl = document.querySelector('#summer-supply-page .challenge-subtitle');
+
+    const rawActiveSchedule = isViewingArchiveMode ? ARCHIVED_TITUS_SCHEDULE : READING_SCHEDULE;
+    
+    if (titleEl && subtitleEl) {
+        if (isViewingArchiveMode) {
+            titleEl.innerText = "Titus – Revelation (Archive)";
+            subtitleEl.innerText = "September 2 – October 15";
+        } else {
+            titleEl.innerText = "Gospels Reading Schedule";
+            subtitleEl.innerText = "October 21 – December 24";
+        }
+    }
+
+    const currentScheduleData = rawActiveSchedule.map((item, index) => ({
+        id: isViewingArchiveMode ? index : `gospel_${index}`,
+        dateLabel: item.dateLabel,
+        assignment: item.assignment,
+        hasText: true,
+        chapters: item.chapters
+    }));
+
     const completedMap = currentUser ? userReadingMap : (JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || {});
 
-    readingChallengeData.forEach(day => {
+    currentScheduleData.forEach(day => {
         const isDone = !!completedMap[day.id];
         
         const row = document.createElement('div');
@@ -545,8 +628,6 @@ function initializeChallengeDashboard() {
     });
 
     calculateStats();
-
-    // Trigger auto-scroll immediately using frame rendering
     scrollListToTargetDay(daysListContainer);
 }
 
@@ -556,10 +637,13 @@ function initializeChallengeDashboard() {
         let totalChapters = 0;
         let completedChaptersCount = 0;
 
-        readingChallengeData.forEach(day => {
+        const rawActiveSchedule = isViewingArchiveMode ? ARCHIVED_TITUS_SCHEDULE : READING_SCHEDULE;
+
+        rawActiveSchedule.forEach((day, index) => {
+            const dayId = isViewingArchiveMode ? index : `gospel_${index}`;
             const dayChapterCount = day.chapters.length;
             totalChapters += dayChapterCount;
-            if (completedMap[day.id]) {
+            if (completedMap[dayId]) {
                 completedChaptersCount += dayChapterCount;
             }
         });
@@ -631,9 +715,13 @@ function initializeChallengeDashboard() {
         if (bibleTextContentTarget) {
             let htmlOutput = ``;
 
-           dayItem.chapters.forEach(chItem => {
+          dayItem.chapters.forEach(chItem => {
                 if (chItem.chapter === 1) {
                     const explicitBookTitles = {
+                        "Matthew": "The Gospel According to Matthew",
+                        "Mark": "The Gospel According to Mark",
+                        "Luke": "The Gospel According to Luke",
+                        "John": "The Gospel According to John",
                         "Titus": "The Epistle of Paul to Titus",
                         "Philemon": "The Epistle of Paul to Philemon",
                         "Hebrews": "The Epistle to the Hebrews",
@@ -652,7 +740,6 @@ function initializeChallengeDashboard() {
                     if (!rawTitle || (rawTitle.includes("Hebrews") && chItem.book !== "Hebrews")) {
                         rawTitle = `The Book of ${chItem.book}`;
                     }
-
                     const currentTitle = rawTitle;
                     const currentSubject = dynamicBookSubjects[chItem.book] || "Subject description text is parsing...";
 
@@ -866,12 +953,25 @@ function initializeChallengeDashboard() {
     // AUTO-SCROLL ADDED HERE:
     scrollListToTargetDay(otContainer);
 }
-    if (btnSummerSupply) {
-        btnSummerSupply.addEventListener('click', () => {
+    const btnNewSchedule = document.getElementById('btn-new-reading-schedule');
+
+    // 1. Home Page Banner -> Opens Active Gospels Schedule
+    if (btnNewSchedule) {
+        btnNewSchedule.addEventListener('click', () => {
+            isViewingArchiveMode = false;
             initializeChallengeDashboard();
             showPage(summerSupplyPage);
             updateHeader('summer_supply');
-            scrollListToTargetDay(daysListContainer);
+        });
+    }
+
+    // 2. Archives Page Banner -> Opens Archived Titus–Revelation Schedule
+    if (btnSummerSupply) {
+        btnSummerSupply.addEventListener('click', () => {
+            isViewingArchiveMode = true;
+            initializeChallengeDashboard();
+            showPage(summerSupplyPage);
+            updateHeader('summer_supply');
         });
     }
 
@@ -1018,7 +1118,11 @@ function parseRawScriptureText() {
             let normalizedBook = currentBookName;
             let bookKey = match[1].toLowerCase().replace(/\./g, '').trim();
             
-            if (bookKey.includes("tit")) normalizedBook = "Titus";
+           if (bookKey.includes("matt") || bookKey.includes("mt")) normalizedBook = "Matthew";
+            else if (bookKey.includes("mark") || bookKey.includes("mk")) normalizedBook = "Mark";
+            else if (bookKey.includes("luke") || bookKey.includes("lk")) normalizedBook = "Luke";
+            else if (bookKey.includes("john") || bookKey.includes("jn")) normalizedBook = "John";
+            else if (bookKey.includes("tit")) normalizedBook = "Titus";
             else if (bookKey.includes("philem") || bookKey.includes("phm")) normalizedBook = "Philemon";
             else if (bookKey.includes("heb")) normalizedBook = "Hebrews";
             else if (bookKey.includes("jas") || bookKey.includes("jam")) normalizedBook = "James";
