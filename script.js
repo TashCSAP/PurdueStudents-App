@@ -29,7 +29,7 @@ let userHighlightsMap = {};
 const HIGHLIGHTS_STORAGE_KEY = 'csatpurdue_user_highlights_v1';
 
 // Update this string whenever you post a new announcement in index.html!
-const LATEST_ANNOUNCEMENT_ID = 'announcement_oct_22_2026';
+const LATEST_ANNOUNCEMENT_ID = 'announcement_oct_26_2026';
 
 const ADMIN_EMAILS = [
     "hylander144@gmail.com",
@@ -165,7 +165,7 @@ function bootUpApplicationEngine() {
         { dateLabel: "Nov 25", assignment: "Mark 13", chapters: [{ book: "Mark", chapter: 13 }] },
         { dateLabel: "Nov 26", assignment: "Mark 14", chapters: [{ book: "Mark", chapter: 14 }] },
         { dateLabel: "Nov 27", assignment: "Mark 15-16", chapters: [{ book: "Mark", chapter: 15 }, { book: "Mark", chapter: 16 }] },
-        { dateLabel: "Nov 28", assignment: "Fall Break (No Reading)", chapters: [] },
+        { dateLabel: "Nov 28", assignment: "Thanksgiving Break (No Reading)", chapters: [] },
         { dateLabel: "Nov 30", assignment: "Luke 1", chapters: [{ book: "Luke", chapter: 1 }] },
         { dateLabel: "Dec 1", assignment: "Luke 2", chapters: [{ book: "Luke", chapter: 2 }] },
         { dateLabel: "Dec 2", assignment: "Luke 3", chapters: [{ book: "Luke", chapter: 3 }] },
